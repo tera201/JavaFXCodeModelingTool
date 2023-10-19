@@ -37,14 +37,15 @@ public class FXSpace<T> extends Group {
 
     public void clean() {
         getChildren().clear();
+        mainObject.clear();
         mainObject = null;
     }
 
-    public SpaceListObject<T> getMainCircle() {
+    public SpaceListObject<T> getMainObject() {
         return mainObject;
     }
 
-    public void setMainCircle(SpaceListObject<T> spaceListObject) {
+    public void setMainObject(SpaceListObject<T> spaceListObject) {
         mainObject = spaceListObject;
     }
 }

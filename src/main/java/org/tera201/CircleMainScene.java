@@ -6,8 +6,9 @@ import javafx.scene.SceneAntialiasing;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.tera201.elements.FXSpace;
-import org.tera201.elements.circle.ClassSpace;
-import org.tera201.elements.circle.PackageSpace;
+import org.tera201.elements.circle.ClassCircle;
+import org.tera201.elements.circle.HollowCylinder;
+import org.tera201.elements.circle.PackageCircle;
 
 public class CircleMainScene extends Application {
     private static final double SCENE_WIDTH = 800;
@@ -16,19 +17,19 @@ public class CircleMainScene extends Application {
 
     @Override
     public void start(Stage stage) {
-        PackageSpace packageCircle = new PackageSpace("1Pack", 1800d, 1673.2421875, 100d);
-        ClassSpace circle = new ClassSpace("11", 800, 400, 100);
-        ClassSpace circle2 = new ClassSpace("12", 3000, 600, 100);
-        ClassSpace circle3 = new ClassSpace("13", 800, 400, 100);
-        ClassSpace circle4 = new ClassSpace("14", 900, 400, 100);
-        ClassSpace circle5 = new ClassSpace("15", 500, 400, 100);
-        ClassSpace circle6 = new ClassSpace("16", 400, 300, 100);
-        ClassSpace circle7 = new ClassSpace("17", 300, 200, 100);
+        PackageCircle packageCircle = new PackageCircle("1Pack", 1800d, 1673.2421875, 100d);
+        ClassCircle circle = new ClassCircle("11", 800, 400, 100);
+        ClassCircle circle2 = new ClassCircle("12", 3000, 600, 100);
+        ClassCircle circle3 = new ClassCircle("13", 800, 400, 100);
+        ClassCircle circle4 = new ClassCircle("14", 900, 400, 100);
+        ClassCircle circle5 = new ClassCircle("15", 500, 400, 100);
+        ClassCircle circle6 = new ClassCircle("16", 400, 300, 100);
+        ClassCircle circle7 = new ClassCircle("17", 300, 200, 100);
         packageCircle.addAllObjects(circle, circle2, circle3, circle4, circle5, circle6, circle7);
 
         packageCircle.updateView();
 
-        FXSpace<PackageSpace> fxSpace = new FXSpace<>(packageCircle);
+        FXSpace<HollowCylinder> fxSpace = new FXSpace<>(packageCircle);
 
         MainSubScene mainSubScene = new MainSubScene(fxSpace, SCENE_WIDTH, SCENE_HEIGHT, true, SceneAntialiasing.BALANCED);
         StackPane stackPane = new StackPane(mainSubScene);

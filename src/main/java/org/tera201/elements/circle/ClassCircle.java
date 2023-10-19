@@ -7,12 +7,12 @@ import org.tera201.SelectionManager;
 import org.tera201.elements.Selectable;
 import org.tera201.elements.SpaceObject;
 
-public class ClassSpace extends HollowCylinder implements SpaceObject, Selectable {
+public class ClassCircle extends HollowCylinder implements SpaceObject, Selectable {
     private final String name;
     private Tooltip tooltip;
     private final Color defaultColor = Color.LIGHTBLUE;
 
-    public ClassSpace(String name, double radiusOuter, double radiusInner, double height) {
+    public ClassCircle(String name, double radiusOuter, double radiusInner, double height) {
         super(radiusOuter, radiusInner, height);
         this.name = name;
         PhongMaterial material = new PhongMaterial();

@@ -12,7 +12,7 @@ import org.tera201.elements.SpaceObject;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PackageSpace extends HollowCylinder implements SpaceListObject<HollowCylinder>, AddNewPosition, Selectable {
+public class PackageCircle extends HollowCylinder implements SpaceListObject<HollowCylinder>, AddNewPosition, Selectable {
     private String name;
     private Tooltip tooltip;
     private final Point lastPoint = new Point();
@@ -22,7 +22,7 @@ public class PackageSpace extends HollowCylinder implements SpaceListObject<Holl
     private List<HollowCylinder> orderList;
     private final Color defaultColor = Color.DARKGRAY;
 
-    public PackageSpace(String name, double radiusOuter, double radiusInner, double height) {
+    public PackageCircle(String name, double radiusOuter, double radiusInner, double height) {
         super(radiusOuter, radiusInner, height);
         PhongMaterial material = new PhongMaterial();
         material.setDiffuseColor(defaultColor);
@@ -84,7 +84,7 @@ public class PackageSpace extends HollowCylinder implements SpaceListObject<Holl
     @Override
     public void addObject(HollowCylinder circle) {
         circles.put(((SpaceObject) circle).getName(), circle);
-        if (circle instanceof PackageSpace packageCircle)
+        if (circle instanceof PackageCircle packageCircle)
             group.getChildren().add(packageCircle.getGroup());
         else
             group.getChildren().add(circle);
@@ -228,8 +228,8 @@ public class PackageSpace extends HollowCylinder implements SpaceListObject<Holl
     }
 
     private void nestedOptimize() {
-        circles.values().stream().filter(PackageSpace.class::isInstance).map(PackageSpace.class::cast).forEach(PackageSpace::nestedOptimize);
-        if (circles.size() == 1 && circles.values().stream().findFirst().get() instanceof PackageSpace packageCircle) {
+        circles.values().stream().filter(PackageCircle.class::isInstance).map(PackageCircle.class::cast).forEach(PackageCircle::nestedOptimize);
+        if (circles.size() == 1 && circles.values().stream().findFirst().get() instanceof PackageCircle packageCircle) {
             name += "." + packageCircle.getName();
             packageCircle.group.getChildren().clear();
             circles.clear();
@@ -262,7 +262,7 @@ public class PackageSpace extends HollowCylinder implements SpaceListObject<Holl
     public void updateView() {
         nestedOptimize();
         updateCircleOrder();
-        orderList.stream().filter(PackageSpace.class::isInstance).map(PackageSpace.class::cast).forEach(PackageSpace::updateView);
+        orderList.stream().filter(PackageCircle.class::isInstance).map(PackageCircle.class::cast).forEach(PackageCircle::updateView);
         if (!orderList.isEmpty()) {
             double optimalR = getOptimalRadius();
             double border = getOuterRadius() - getInnerRadius();
