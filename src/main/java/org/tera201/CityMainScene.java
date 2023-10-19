@@ -12,7 +12,7 @@ import org.tera201.elements.city.Quarter;
 
 import java.util.Random;
 
-public class CircleMainScene extends Application {
+public class CityMainScene extends Application {
     private static final double SCENE_WIDTH = 800;
     private static final double SCENE_HEIGHT = 600;
 

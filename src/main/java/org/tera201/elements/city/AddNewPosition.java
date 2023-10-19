@@ -1,4 +1,4 @@
-package org.tera201.elements;
+package org.tera201.elements.city;
 
 import javafx.scene.shape.Box;
 

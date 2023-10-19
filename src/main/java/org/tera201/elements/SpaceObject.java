@@ -7,7 +7,5 @@ public interface SpaceObject {
 
     void setPosition(double newX, double newZ);
 
-    Tooltip ensureTooltip();
-
     void setNotes(String notes);
 }

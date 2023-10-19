@@ -5,7 +5,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
-import org.tera201.elements.AddNewPosition;
 import org.tera201.elements.SpaceListObject;
 
 import java.util.*;

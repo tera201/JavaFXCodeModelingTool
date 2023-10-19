@@ -5,7 +5,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import org.tera201.SelectionManager;
-import org.tera201.elements.AddNewPosition;
 import org.tera201.elements.Selectable;
 import org.tera201.elements.SpaceListObject;
 import org.tera201.elements.SpaceObject;
@@ -43,8 +42,7 @@ public class PackageSpace extends HollowCylinder implements SpaceListObject<Holl
         setTranslateZ(newZ);
     }
 
-    @Override
-    public Tooltip ensureTooltip() {
+    private Tooltip ensureTooltip() {
         if(tooltip == null) {
             tooltip = new Tooltip(name);
             Tooltip.install(this, tooltip);

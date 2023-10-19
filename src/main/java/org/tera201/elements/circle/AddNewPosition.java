@@ -1,4 +1,4 @@
-package org.tera201.elements;
+package org.tera201.elements.circle;
 
 public interface AddNewPosition {
 

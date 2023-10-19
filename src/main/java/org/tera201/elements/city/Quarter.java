@@ -6,7 +6,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import org.tera201.SelectionManager;
-import org.tera201.elements.AddNewPosition;
 import org.tera201.elements.Selectable;
 import org.tera201.elements.SpaceListObject;
 

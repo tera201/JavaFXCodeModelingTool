@@ -9,7 +9,7 @@ import org.tera201.elements.FXSpace;
 import org.tera201.elements.circle.ClassSpace;
 import org.tera201.elements.circle.PackageSpace;
 
-public class MainScene extends Application {
+public class CircleMainScene extends Application {
     private static final double SCENE_WIDTH = 800;
     private static final double SCENE_HEIGHT = 600;
     InfoPane infoPane = new InfoPane();
@@ -26,24 +26,6 @@ public class MainScene extends Application {
         ClassSpace circle7 = new ClassSpace("17", 300, 200, 100);
         packageCircle.addAllObjects(circle, circle2, circle3, circle4, circle5, circle6, circle7);
 
-
-//        PackageCircle packageCircle2 = new PackageCircle("2Pack", 600d, 500d, 100d);
-//        ClassCircle circle21 = new ClassCircle("21", 300, 200, 100);
-//        packageCircle2.addCircle(circle21);
-//        packageCircle.addCircle(packageCircle2);
-//
-//
-//        PackageCircle packageCircle3 = new PackageCircle("3Pack", 16000d, 15000d, 100d);
-//        PackageCircle packageCircle4 = new PackageCircle("4Pack", 600d, 500d, 100d);
-//        ClassCircle circle41 = new ClassCircle("41", 500, 400, 100);
-//        ClassCircle circle42 = new ClassCircle("42", 800, 400, 100);
-//        packageCircle4.addAllCircles(circle41, circle42);
-//        ClassCircle circle31 = new ClassCircle("31", 500, 400, 100);
-//        packageCircle3.addCircle(packageCircle4);
-//        packageCircle3.addCircle(circle31);
-//
-//        packageCircle.addCircle(packageCircle3);
-        System.out.println("Update");
         packageCircle.updateView();
 
         FXSpace<PackageSpace> fxSpace = new FXSpace<>(packageCircle);

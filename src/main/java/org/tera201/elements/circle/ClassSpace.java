@@ -36,8 +36,7 @@ public class ClassSpace extends HollowCylinder implements SpaceObject, Selectabl
         setTranslateZ(newZ);
     }
 
-    @Override
-    public Tooltip ensureTooltip() {
+    private Tooltip ensureTooltip() {
         if(tooltip == null) {
             tooltip = new Tooltip(name);
             Tooltip.install(this, tooltip);
