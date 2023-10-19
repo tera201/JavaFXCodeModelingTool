@@ -2,12 +2,14 @@ package org.tera201.elements;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
+import org.tera201.SelectionManager;
 
 import java.util.Arrays;
 
 public class FXSpace<T> extends Group {
 
     private SpaceListObject<T> mainObject;
+    private SelectionManager selectionManager;
 
     public FXSpace() {}
 
@@ -39,6 +41,14 @@ public class FXSpace<T> extends Group {
         getChildren().clear();
         mainObject.clear();
         mainObject = null;
+    }
+
+    public void setSelectionManager(SelectionManager selectionManager) {
+        mainObject.setSelectionManager(selectionManager);
+    }
+
+    public SelectionManager getSelectionManager() {
+        return  selectionManager;
     }
 
     public SpaceListObject<T> getMainObject() {

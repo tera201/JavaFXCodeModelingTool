@@ -13,7 +13,7 @@ import org.tera201.elements.circle.PackageCircle;
 public class CircleMainScene extends Application {
     private static final double SCENE_WIDTH = 800;
     private static final double SCENE_HEIGHT = 600;
-    InfoPane infoPane = new InfoPane();
+
 
     @Override
     public void start(Stage stage) {
@@ -33,7 +33,11 @@ public class CircleMainScene extends Application {
 
         MainSubScene mainSubScene = new MainSubScene(fxSpace, SCENE_WIDTH, SCENE_HEIGHT, true, SceneAntialiasing.BALANCED);
         StackPane stackPane = new StackPane(mainSubScene);
-        InfoPane.setMainPane(stackPane);
+
+        InfoPane infoPane = new InfoPane();
+        infoPane.setMainPane(stackPane);
+        SelectionManager selectionManager = new SelectionManager(infoPane);
+        fxSpace.setSelectionManager(selectionManager);
 
         Scene scene2 = new Scene(stackPane, SCENE_WIDTH, SCENE_HEIGHT, true, SceneAntialiasing.BALANCED);
         stage.setTitle("3D Dragging");

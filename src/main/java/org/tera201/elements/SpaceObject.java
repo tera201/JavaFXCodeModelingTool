@@ -1,6 +1,7 @@
 package org.tera201.elements;
 
 import javafx.scene.control.Tooltip;
+import org.tera201.SelectionManager;
 
 public interface SpaceObject {
     String getName();
@@ -8,4 +9,6 @@ public interface SpaceObject {
     void setPosition(double newX, double newZ);
 
     void setNotes(String notes);
+
+    void setSelectionManager(SelectionManager selectionManager);
 }

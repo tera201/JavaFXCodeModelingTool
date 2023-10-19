@@ -11,6 +11,7 @@ public class ClassCircle extends HollowCylinder implements SpaceObject, Selectab
     private final String name;
     private Tooltip tooltip;
     private final Color defaultColor = Color.LIGHTBLUE;
+    private SelectionManager selectionManager;
 
     public ClassCircle(String name, double radiusOuter, double radiusInner, double height) {
         super(radiusOuter, radiusInner, height);
@@ -20,7 +21,7 @@ public class ClassCircle extends HollowCylinder implements SpaceObject, Selectab
         material.setSpecularColor(Color.BLACK);
         setMaterial(material);
         this.setOnMouseClicked(event -> {
-            SelectionManager.setSelected(this);
+            selectionManager.setSelected(this);
             event.consume();  // stop event propagation
         });
     }
@@ -47,6 +48,11 @@ public class ClassCircle extends HollowCylinder implements SpaceObject, Selectab
     @Override
     public void setNotes(String notes) {
         ensureTooltip().setText(notes);
+    }
+
+    @Override
+    public void setSelectionManager(SelectionManager selectionManager) {
+        this.selectionManager = selectionManager;
     }
 
     @Override

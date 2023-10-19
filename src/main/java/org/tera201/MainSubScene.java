@@ -9,6 +9,7 @@ import javafx.scene.shape.Shape3D;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
+import org.tera201.elements.FXSpace;
 
 public class MainSubScene extends SubScene {
     private final PerspectiveCamera camera;
@@ -29,8 +30,8 @@ public class MainSubScene extends SubScene {
     private Point3D vecPos;
     private double distance;
     private Shape3D s;
-    public MainSubScene(@NamedArg("root") Group root, @NamedArg("width") double width, @NamedArg("height") double height,
-                 @NamedArg("depthBuffer") boolean depthBuffer, @NamedArg("antiAliasing") SceneAntialiasing antiAliasing) {
+    public MainSubScene(@NamedArg("root") FXSpace root, @NamedArg("width") double width, @NamedArg("height") double height,
+                        @NamedArg("depthBuffer") boolean depthBuffer, @NamedArg("antiAliasing") SceneAntialiasing antiAliasing) {
         super(root, width, height, depthBuffer, antiAliasing);
 
 //        this.setFill(Color.web("3d3d3d"));
@@ -121,7 +122,7 @@ public class MainSubScene extends SubScene {
             }
         });
 
-        this.setOnMouseClicked(event -> SelectionManager.setSelected(null));
+        this.setOnMouseClicked(event -> root.getSelectionManager().setSelected(null));
     }
 
     /*

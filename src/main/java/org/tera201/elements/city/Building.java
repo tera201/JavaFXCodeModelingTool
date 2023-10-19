@@ -12,6 +12,7 @@ public class Building extends Box implements SpaceObject, Selectable {
     private final String name;
     private Tooltip tooltip;
     private String info;
+    private SelectionManager selectionManager;
     public Building(double width, double height, double depth) {
         this(null, width, height, depth);
     }
@@ -25,7 +26,7 @@ public class Building extends Box implements SpaceObject, Selectable {
         setMaterial(material);
         ensureTooltip().setText(name);
         this.setOnMouseClicked(event -> {
-            SelectionManager.setSelected(this);
+            selectionManager.setSelected(this);
             event.consume();  // stop event propagation
         });
     }
@@ -73,5 +74,10 @@ public class Building extends Box implements SpaceObject, Selectable {
 
     public void setNotes(String notes) {
         ensureTooltip().setText(notes);
+    }
+
+    @Override
+    public void setSelectionManager(SelectionManager selectionManager) {
+        this.selectionManager = selectionManager;
     }
 }

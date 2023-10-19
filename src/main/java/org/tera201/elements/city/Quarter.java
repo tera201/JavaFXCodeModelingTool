@@ -32,6 +32,7 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     private boolean rotated;
 
     double separate;
+    private SelectionManager selectionManager;
 
     public Quarter(double width, double height, double depth, double separate) {
         this(null, width, height, depth, separate);
@@ -51,7 +52,7 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
         ensureTooltip().setText(name);
 
         this.setOnMouseClicked(event -> {
-            SelectionManager.setSelected(this);
+            selectionManager.setSelected(this);
             event.consume();  // stop event propagation
         });
     }
@@ -104,6 +105,7 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
         buildings.put(building.getName(), building);
         group.getChildren().add(building);
         setBuildingPosition(building);
+        building.setSelectionManager(selectionManager);
     }
 
     public void setBuildingPosition(Building building) {
@@ -225,6 +227,12 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     @Override
     public void setNotes(String notes) {
         ensureTooltip().setText(notes);
+    }
+
+    @Override
+    public void setSelectionManager(SelectionManager selectionManager) {
+        buildings.values().forEach(it -> it.setSelectionManager(selectionManager));
+        this.selectionManager = selectionManager;
     }
 
     public Map<String, Building> getBuildings() {

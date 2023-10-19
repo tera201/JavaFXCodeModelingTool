@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
+import org.tera201.SelectionManager;
 import org.tera201.elements.SpaceListObject;
 
 import java.util.*;
@@ -21,6 +22,7 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
     private final List<QuarterPosition> quarterPositionList =  new ArrayList<>();
 
     private final Map<String,Quarter> quarters = new HashMap<>();
+    private SelectionManager selectionManager;
     public City(double width, double height, double depth) {
         super(width, height, depth);
         PhongMaterial material = new PhongMaterial();
@@ -177,6 +179,12 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
 
     @Override
     public void setNotes(String notes) {
+    }
+
+    @Override
+    public void setSelectionManager(SelectionManager selectionManager) {
+        quarters.values().forEach(it -> it.setSelectionManager(selectionManager));
+        this.selectionManager = selectionManager;
     }
 
     private static class QuarterPosition {

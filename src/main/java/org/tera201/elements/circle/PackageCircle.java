@@ -21,6 +21,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     private Map<String, HollowCylinder> circles = new HashMap<>();
     private List<HollowCylinder> orderList;
     private final Color defaultColor = Color.DARKGRAY;
+    private SelectionManager selectionManager;
 
     public PackageCircle(String name, double radiusOuter, double radiusInner, double height) {
         super(radiusOuter, radiusInner, height);
@@ -30,6 +31,10 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         setMaterial(material);
         group.getChildren().add(this);
         this.name = name;
+        this.setOnMouseClicked(event -> {
+            selectionManager.setSelected(this);
+            event.consume();  // stop event propagation
+        });
     }
     @Override
     public String getName() {
@@ -53,6 +58,12 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     @Override
     public void setNotes(String notes) {
         ensureTooltip().setText(notes);
+    }
+
+    @Override
+    public void setSelectionManager(SelectionManager selectionManager) {
+        circles.values().forEach(it -> ((SpaceObject) it).setSelectionManager(selectionManager));
+        this.selectionManager = selectionManager;
     }
 
     @Override
@@ -89,10 +100,6 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         else
             group.getChildren().add(circle);
         setCirclePosition(circle);
-        this.setOnMouseClicked(event -> {
-            SelectionManager.setSelected(this);
-            event.consume();  // stop event propagation
-        });
     }
 
     @Override

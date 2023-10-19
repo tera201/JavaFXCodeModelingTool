@@ -17,7 +17,6 @@ public class CityMainScene extends Application {
     private static final double SCENE_HEIGHT = 600;
 
     Random rand = new Random();
-    InfoPane infoPane = new InfoPane();
 
     @Override
     public void start(Stage stage) {
@@ -26,7 +25,11 @@ public class CityMainScene extends Application {
         FXSpace<Box> fxSpace = new FXSpace<>(city);
         MainSubScene mainSubScene = new MainSubScene(fxSpace, SCENE_WIDTH, SCENE_HEIGHT, true, SceneAntialiasing.BALANCED);
         StackPane stackPane = new StackPane(mainSubScene);
-        InfoPane.setMainPane(stackPane);
+
+        InfoPane infoPane = new InfoPane();
+        infoPane.setMainPane(stackPane);
+        SelectionManager selectionManager = new SelectionManager(infoPane);
+        fxSpace.setSelectionManager(selectionManager);
 
         mainSubScene.heightProperty().bind(stackPane.heightProperty());
         mainSubScene.widthProperty().bind(stackPane.widthProperty());
