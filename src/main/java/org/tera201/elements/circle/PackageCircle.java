@@ -109,8 +109,6 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
 
     public void setCirclePosition(HollowCylinder circle) {
         double newAngle = lastPoint.getX() != 0? genNewAngle(circle) : 0;
-//        if (newAngle == 0)
-//            System.out.println(((CircleObject) circle).getName() + " " + 0);
         adjustBuildingPosition(circle, newAngle);
         updateLastPointWith(circle, newAngle);
     }
@@ -140,8 +138,6 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         double a = getInnerRadius() - circle.getOuterRadius();
         double b = getInnerRadius() - lastPoint.getR();
         double c = circle.getOuterRadius() + lastPoint.getR();
-//        System.out.println(((CircleObject) circle).getName() + " " + Math.toDegrees(Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b))));
-//        System.out.println("cides: " + a + " " + b + " " + c + " R" + getInnerRadius());
         return lastPoint.getAngle() + Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b));
     }
 
@@ -149,11 +145,8 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         double x0 = circlePositionList.get(0).centerX;
         double z0 = circlePositionList.get(0).centerZ;
         double r0 = circlePositionList.get(0).radius;
-//        System.out.println("circlePositionList SIZE: " + circlePositionList.size());
-//        System.out.println(circlePositionList.stream().map(it -> "Pos: x: " + it.centerX  + " z: " + it.centerZ + " r: " + it.radius).toList());
         for (int c = 1; c < circlePositionList.size(); c++) {
             Double centerLine = getStraightLineLen(x0, z0, circlePositionList.get(c).centerX, circlePositionList.get(c).centerZ);
-//            System.out.println(centerLine + " === " + (r0 + circlePositionList.get(c).radius));
             if (centerLine.isNaN() || (centerLine < (r0 + circlePositionList.get(c).radius) - 0.0000001)) return false;
         }
         return true;
@@ -194,13 +187,9 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         double minR = 2 * orderList.get(0).getOuterRadius();
         Double gap = getAngleGap(getAngleForRadius(orderList, minR));
         double oldGap = 0;
-        boolean nestedRadiusFit = checkLinesBtNestedCirclesCenters();
+        boolean nestedRadiusFit;
         byte changed = (byte) (gap > 0 ? 2 : 1);
         while (gap < 0 || gap > 0.1) {
-//            System.out.println("============Iteration=================");
-//            System.out.println("minR: " + minR);
-//            System.out.println("gap: " + gap);
-//            System.out.println("step: " + step);
             if (gap < 0) {
                 changed = (byte) (changed == 2 ? 0 : 1);
                 step = changed == 0 ? step/2 : step;
@@ -219,9 +208,6 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
                 if (step < 10) break;
             }
             oldGap = gap;
-//            System.out.println("gap: " + gap);
-//            System.out.println("step: " + step);
-//            System.out.println("============End Iteration=================");
         }
         return minR;
     }
