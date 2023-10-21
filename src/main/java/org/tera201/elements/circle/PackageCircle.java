@@ -31,10 +31,6 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         setMaterial(material);
         group.getChildren().add(this);
         this.name = name;
-        this.setOnMouseClicked(event -> {
-            selectionManager.setSelected(this);
-            event.consume();  // stop event propagation
-        });
     }
     @Override
     public String getName() {
@@ -64,6 +60,12 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     public void setSelectionManager(SelectionManager selectionManager) {
         circles.values().forEach(it -> ((SpaceObject) it).setSelectionManager(selectionManager));
         this.selectionManager = selectionManager;
+        this.setOnMouseClicked(event -> {
+            if (selectionManager != null) {
+                this.selectionManager.setSelected(this);
+            }
+            event.consume();  // stop event propagation
+        });
     }
 
     @Override
@@ -100,6 +102,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         else
             group.getChildren().add(circle);
         setCirclePosition(circle);
+        ((SpaceObject) circle).setSelectionManager(selectionManager);
     }
 
     @Override
@@ -227,7 +230,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
             packageCircle.group.getChildren().clear();
             circles.clear();
             circles = packageCircle.getNestedCircles();
-            circles.values().stream().forEach(this::addObject);
+            circles.values().forEach(this::addObject);
         }
     }
 
@@ -263,6 +266,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
             setOuterRadius(optimalR + border);
             lastPoint.reset();
             orderList.forEach(this::setCirclePosition);
+            orderList.forEach(it -> ((SpaceObject) it).setSelectionManager(selectionManager));
         }
     }
 

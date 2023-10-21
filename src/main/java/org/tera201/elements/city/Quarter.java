@@ -17,9 +17,6 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     private static final double HALF = 0.5;
 
     private String name;
-
-//    private List<Building> buildings = new ArrayList<>();
-
     private final Map<String, Building> buildings = new HashMap<>();
     private City city;
     private final Point lastPoint;
@@ -48,13 +45,7 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
         material.setDiffuseColor(Color.LIGHTBLUE);
         material.setSpecularColor(Color.BLACK);
         setMaterial(material);
-
         ensureTooltip().setText(name);
-
-        this.setOnMouseClicked(event -> {
-            selectionManager.setSelected(this);
-            event.consume();  // stop event propagation
-        });
     }
 
     @Override
@@ -211,6 +202,7 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
         clearPosition();
         resize();
         buildings.values().stream().sorted(Comparator.comparingDouble(q -> - q.getWidth() * q.getDepth())).forEach(this::setBuildingPosition);
+        buildings.values().forEach(it -> it.setSelectionManager(selectionManager));
     }
 
     public void clearPosition() {
@@ -233,6 +225,12 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     public void setSelectionManager(SelectionManager selectionManager) {
         buildings.values().forEach(it -> it.setSelectionManager(selectionManager));
         this.selectionManager = selectionManager;
+        this.setOnMouseClicked(event -> {
+            if (selectionManager != null) {
+                this.selectionManager.setSelected(this);
+            }
+            event.consume();  // stop event propagation
+        });
     }
 
     public Map<String, Building> getBuildings() {

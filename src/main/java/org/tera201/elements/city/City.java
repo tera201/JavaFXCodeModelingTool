@@ -7,6 +7,7 @@ import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
 import org.tera201.SelectionManager;
 import org.tera201.elements.SpaceListObject;
+import org.tera201.elements.SpaceObject;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -39,6 +40,7 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
         this.quarters.put(quarter.getName(), quarter);
         this.group.getChildren().add(quarter.getGroup());
         setQuarterPosition(quarter);
+        quarter.setSelectionManager(selectionManager);
     }
 
     public void setQuarterPosition(Quarter quarter) {
@@ -165,6 +167,7 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
         quarters.values().stream().sorted(Comparator.comparingDouble(q -> - q.getWidth() * q.getDepth())).forEach(quarter -> {
             setQuarterPosition(quarter);
         });
+        quarters.values().forEach(it -> it.setSelectionManager(selectionManager));
         resizeByLastPosition();
     }
 

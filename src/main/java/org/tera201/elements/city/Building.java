@@ -25,10 +25,6 @@ public class Building extends Box implements SpaceObject, Selectable {
         material.setSpecularColor(Color.BLACK);
         setMaterial(material);
         ensureTooltip().setText(name);
-        this.setOnMouseClicked(event -> {
-            selectionManager.setSelected(this);
-            event.consume();  // stop event propagation
-        });
     }
 
     @Override
@@ -79,5 +75,11 @@ public class Building extends Box implements SpaceObject, Selectable {
     @Override
     public void setSelectionManager(SelectionManager selectionManager) {
         this.selectionManager = selectionManager;
+        this.setOnMouseClicked(event -> {
+            if (selectionManager != null) {
+                this.selectionManager.setSelected(this);
+            }
+            event.consume();  // stop event propagation
+        });
     }
 }
