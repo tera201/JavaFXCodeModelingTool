@@ -28,6 +28,7 @@ public class FXSpace<T> extends Group {
         }
         else
             getChildren().add((Node) spaceObject);
+        spaceObject.setSelectionManager(selectionManager);
     }
 
     public void remove(SpaceObject spaceObject) {
@@ -39,11 +40,13 @@ public class FXSpace<T> extends Group {
 
     public void clean() {
         getChildren().clear();
+        mainObject.setSelectionManager(null);
         mainObject.clear();
         mainObject = null;
     }
 
     public void setSelectionManager(SelectionManager selectionManager) {
+        this.selectionManager = selectionManager;
         mainObject.setSelectionManager(selectionManager);
     }
 
