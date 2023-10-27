@@ -135,6 +135,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     private void bindCircle(HollowCylinder circle, Double angle) {
         circle.translateXProperty().bind(translateXProperty().add(innerRadiusProperty().subtract(circle.outerRadiusProperty()).multiply(Math.cos(angle))));
         circle.translateZProperty().bind(translateZProperty().add(innerRadiusProperty().subtract(circle.outerRadiusProperty()).multiply(Math.sin(angle))));
+        circle.translateYProperty().bind(translateYProperty());
     }
 
     private double genNewAngle(HollowCylinder circle) {
