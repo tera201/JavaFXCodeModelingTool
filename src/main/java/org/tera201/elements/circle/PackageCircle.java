@@ -135,6 +135,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     private void bindCircle(HollowCylinder circle, Double angle) {
         circle.translateXProperty().bind(translateXProperty().add(innerRadiusProperty().subtract(circle.outerRadiusProperty()).multiply(Math.cos(angle))));
         circle.translateZProperty().bind(translateZProperty().add(innerRadiusProperty().subtract(circle.outerRadiusProperty()).multiply(Math.sin(angle))));
+        circle.translateYProperty().bind(translateYProperty());
     }
 
     private double genNewAngle(HollowCylinder circle) {
@@ -228,9 +229,10 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         if (circles.size() == 1 && circles.values().stream().findFirst().get() instanceof PackageCircle packageCircle) {
             name += "." + packageCircle.getName();
             packageCircle.group.getChildren().clear();
-            circles.clear();
-            circles = packageCircle.getNestedCircles();
-            circles.values().forEach(this::addObject);
+            Map<String, HollowCylinder> nestedCircles = packageCircle.getNestedCircles();
+            clear();
+            nestedCircles.values().forEach(this::addObject);
+            packageCircle.clear();
         }
     }
 
@@ -245,6 +247,8 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         Arrays.stream(circles).forEach(this::removeObject);
     }
 
+
+    // TODO: maybe call for nested circles, but needs refactoring for nestedOptimize
     @Override
     public void clear() {
         circles.clear();
