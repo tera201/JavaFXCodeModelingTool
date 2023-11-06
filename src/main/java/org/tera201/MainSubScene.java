@@ -11,6 +11,8 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import org.tera201.elements.FXSpace;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class MainSubScene extends SubScene {
     private final PerspectiveCamera camera;
 
@@ -54,6 +56,8 @@ public class MainSubScene extends SubScene {
         AmbientLight ambientLight = new AmbientLight(Color.GAINSBORO);
         ambientLight.setLightOn(true);
 
+        AtomicLong mousePressTime = new AtomicLong();
+
 //        root.getChildren().add(ambientLight);
         root.getChildren().add(light);
         this.setCamera(camera);
@@ -77,6 +81,7 @@ public class MainSubScene extends SubScene {
         });
 
         this.setOnMousePressed((MouseEvent me) -> {
+            mousePressTime.set(System.currentTimeMillis());
             mouseOldX = me.getSceneX();
             mouseOldY = me.getSceneY();
             PickResult pr = me.getPickResult();
@@ -117,12 +122,16 @@ public class MainSubScene extends SubScene {
         });
 
         this.setOnMouseReleased((MouseEvent me)->{
+            mousePressTime.set(System.currentTimeMillis() - mousePressTime.get());
             if(isPicking){
                 isPicking=false;
             }
         });
 
-        this.setOnMouseClicked(event -> root.getSelectionManager().setSelected(null));
+        this.setOnMouseClicked(event -> {
+            if (mousePressTime.get() < 200)
+                root.getSelectionManager().setSelected(null);
+        });
     }
 
     /*

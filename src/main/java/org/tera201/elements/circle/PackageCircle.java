@@ -11,6 +11,7 @@ import org.tera201.elements.SpaceListObject;
 import org.tera201.elements.SpaceObject;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 public class PackageCircle extends HollowCylinder implements SpaceListObject<HollowCylinder>, AddNewPosition,
@@ -73,11 +74,15 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     @Override
     public void setSelectionManager(SelectionManager selectionManager) {
         circles.values().forEach(it -> ((SpaceObject) it).setSelectionManager(selectionManager));
+        AtomicLong mousePressTime = new AtomicLong();
         this.selectionManager = selectionManager;
         if (selectionManager != null)
             selectionManager.addObserver(this);
+
+        this.setOnMousePressed(event -> mousePressTime.set(System.currentTimeMillis()));
+        this.setOnMouseReleased(event -> mousePressTime.set(System.currentTimeMillis() - mousePressTime.get()));
         this.setOnMouseClicked(event -> {
-            if (selectionManager != null) {
+            if (selectionManager != null && mousePressTime.get() < 200) {
                 this.selectionManager.setSelected(this);
             }
             event.consume();  // stop event propagation
@@ -277,7 +282,6 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         lastPoint.reset();
         group.getChildren().clear();
         group.getChildren().add(this);
-        selectionManager.cleanObserver();
 
     }
 

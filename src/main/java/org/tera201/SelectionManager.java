@@ -8,9 +8,9 @@ import java.util.List;
 
 public class SelectionManager {
 
-    private InfoPane infoPane;
+    private final InfoPane infoPane;
     private Selectable selected;
-    private static List<SelectionObserver> observers = new ArrayList<>();
+    private static final List<SelectionObserver> observers = new ArrayList<>();
     public SelectionManager(InfoPane infoPane) {
         this.infoPane = infoPane;
     }

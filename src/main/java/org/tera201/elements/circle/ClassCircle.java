@@ -8,6 +8,8 @@ import org.tera201.elements.Selectable;
 import org.tera201.elements.SelectionObserver;
 import org.tera201.elements.SpaceObject;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class ClassCircle extends HollowCylinder implements SpaceObject, Selectable, SelectionObserver {
     private final String name;
     private String path;
@@ -62,10 +64,14 @@ public class ClassCircle extends HollowCylinder implements SpaceObject, Selectab
     @Override
     public void setSelectionManager(SelectionManager selectionManager) {
         this.selectionManager = selectionManager;
+        AtomicLong mousePressTime = new AtomicLong();
         if (selectionManager != null)
             selectionManager.addObserver(this);
+
+        this.setOnMousePressed(event -> mousePressTime.set(System.currentTimeMillis()));
+        this.setOnMouseReleased(event -> mousePressTime.set(System.currentTimeMillis() - mousePressTime.get()));
         this.setOnMouseClicked(event -> {
-            if (selectionManager != null) {
+            if (selectionManager != null && mousePressTime.get() < 200) {
                 this.selectionManager.setSelected(this);
             }
             event.consume();  // stop event propagation
