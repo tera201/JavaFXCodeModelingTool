@@ -6,13 +6,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import org.tera201.SelectionManager;
 import org.tera201.elements.Selectable;
+import org.tera201.elements.SelectionObserver;
 import org.tera201.elements.SpaceListObject;
 import org.tera201.elements.SpaceObject;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PackageCircle extends HollowCylinder implements SpaceListObject<HollowCylinder>, AddNewPosition, Selectable {
+public class PackageCircle extends HollowCylinder implements SpaceListObject<HollowCylinder>, AddNewPosition,
+        Selectable, SelectionObserver {
     private String name;
     private String path = "";
     private Tooltip tooltip;
@@ -72,6 +74,8 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     public void setSelectionManager(SelectionManager selectionManager) {
         circles.values().forEach(it -> ((SpaceObject) it).setSelectionManager(selectionManager));
         this.selectionManager = selectionManager;
+        if (selectionManager != null)
+            selectionManager.addObserver(this);
         this.setOnMouseClicked(event -> {
             if (selectionManager != null) {
                 this.selectionManager.setSelected(this);
@@ -111,11 +115,11 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         circles.put(((SpaceObject) circle).getName(), circle);
         if (circle instanceof PackageCircle packageCircle) {
             group.getChildren().add(packageCircle.getGroup());
-            packageCircle.setPath(path + "." + packageCircle.getName());
+            packageCircle.setPath(path + ":" + packageCircle.getName());
         }
         else if (circle instanceof ClassCircle classCircle){
             group.getChildren().add(classCircle);
-            classCircle.setPath(path + "." + classCircle.getName());
+            classCircle.setPath(path + ":" + classCircle.getName());
         }
 
         setCirclePosition(circle);
@@ -257,6 +261,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     public void removeObject(HollowCylinder circle) {
         group.getChildren().remove(circle);
         circles.remove(((SpaceObject) circle).getName());
+        selectionManager.removeObserver(((SelectionObserver) circle));
     }
 
     @Override
@@ -272,6 +277,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         lastPoint.reset();
         group.getChildren().clear();
         group.getChildren().add(this);
+        selectionManager.cleanObserver();
 
     }
 
@@ -289,6 +295,35 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
             orderList.forEach(this::setCirclePosition);
             orderList.forEach(it -> ((SpaceObject) it).setSelectionManager(selectionManager));
         }
+    }
+
+    @Override
+    public void onSelectionChanged(Selectable newSelection) {
+        if (this.equals(newSelection) || newSelection == null ) {
+            this.setVisible(true);
+        } else {
+            String selectedPath = ((SpaceObject)newSelection).getPath();
+            if (getFirstPathNode(selectedPath).equals(getFirstPathNode(path)) ||
+                    getPathWithoutFirstNode(selectedPath).equals(getPathWithoutFirstNode(path)))
+                this.setVisible(true);
+            else this.setVisible(false);
+        }
+    }
+
+    private String getFirstPathNode(String path) {
+        int dotIndex = path.indexOf(':');
+        if (dotIndex != -1) {
+            return path.substring(0, dotIndex);
+        }
+        return path;
+    }
+
+    private String getPathWithoutFirstNode(String path) {
+        int dotIndex = path.lastIndexOf(':');
+        if (dotIndex != -1) {
+            return path.substring(dotIndex, path.length() - 1);
+        }
+        return path;
     }
 
     private static class CirclePosition {

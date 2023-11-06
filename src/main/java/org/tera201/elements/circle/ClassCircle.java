@@ -5,9 +5,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import org.tera201.SelectionManager;
 import org.tera201.elements.Selectable;
+import org.tera201.elements.SelectionObserver;
 import org.tera201.elements.SpaceObject;
 
-public class ClassCircle extends HollowCylinder implements SpaceObject, Selectable {
+public class ClassCircle extends HollowCylinder implements SpaceObject, Selectable, SelectionObserver {
     private final String name;
     private String path;
     private Tooltip tooltip;
@@ -61,6 +62,8 @@ public class ClassCircle extends HollowCylinder implements SpaceObject, Selectab
     @Override
     public void setSelectionManager(SelectionManager selectionManager) {
         this.selectionManager = selectionManager;
+        if (selectionManager != null)
+            selectionManager.addObserver(this);
         this.setOnMouseClicked(event -> {
             if (selectionManager != null) {
                 this.selectionManager.setSelected(this);
@@ -82,5 +85,34 @@ public class ClassCircle extends HollowCylinder implements SpaceObject, Selectab
     @Override
     public String getHeader() {
         return name;
+    }
+
+    @Override
+    public void onSelectionChanged(Selectable newSelection) {
+        if (this.equals(newSelection) || newSelection == null ) {
+            this.setVisible(true);
+        } else {
+            String selectedPath = ((SpaceObject)newSelection).getPath();
+            if (getFirstPathNode(selectedPath).equals(getFirstPathNode(path)) ||
+                    getPathWithoutFirstNode(selectedPath).equals(getPathWithoutFirstNode(path)))
+                this.setVisible(true);
+            else this.setVisible(false);
+        }
+    }
+
+    private String getFirstPathNode(String path) {
+        int dotIndex = path.indexOf(':');
+        if (dotIndex != -1) {
+            return path.substring(0, dotIndex + 1);
+        }
+        return path;
+    }
+
+    private String getPathWithoutFirstNode(String path) {
+        int dotIndex = path.lastIndexOf(':');
+        if (dotIndex != -1) {
+            return path.substring(dotIndex, path.length() - 1);
+        }
+        return path;
     }
 }
