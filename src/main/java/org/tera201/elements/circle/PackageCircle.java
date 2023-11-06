@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 public class PackageCircle extends HollowCylinder implements SpaceListObject<HollowCylinder>, AddNewPosition, Selectable {
     private String name;
+    private String path = "";
     private Tooltip tooltip;
     private final Point lastPoint = new Point();
     private final Group group = new Group();
@@ -31,10 +32,21 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         setMaterial(material);
         group.getChildren().add(this);
         this.name = name;
+        this.path = name;
     }
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getPath() {
+        return path;
+    }
+
+    @Override
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @Override
@@ -77,7 +89,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     public String getInfo() {
         return circles.values().stream().map(it ->
             ((SpaceObject) it).getName() + " r:" + it.getInnerRadius() + " R:" + it.getOuterRadius() + "\n"
-        ).collect(Collectors.joining());
+        ).collect(Collectors.joining()) + path;
     }
 
     @Override
@@ -97,10 +109,15 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     @Override
     public void addObject(HollowCylinder circle) {
         circles.put(((SpaceObject) circle).getName(), circle);
-        if (circle instanceof PackageCircle packageCircle)
+        if (circle instanceof PackageCircle packageCircle) {
             group.getChildren().add(packageCircle.getGroup());
-        else
-            group.getChildren().add(circle);
+            packageCircle.setPath(path + "." + packageCircle.getName());
+        }
+        else if (circle instanceof ClassCircle classCircle){
+            group.getChildren().add(classCircle);
+            classCircle.setPath(path + "." + classCircle.getName());
+        }
+
         setCirclePosition(circle);
         ((SpaceObject) circle).setSelectionManager(selectionManager);
     }

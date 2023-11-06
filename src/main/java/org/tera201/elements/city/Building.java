@@ -63,6 +63,16 @@ public class Building extends Box implements SpaceObject, Selectable {
     public String getName() { return name; }
 
     @Override
+    public String getPath() {
+        return null;
+    }
+
+    @Override
+    public void setPath(String path) {
+
+    }
+
+    @Override
     public void setPosition(double newX, double newZ) {
         setTranslateX(-newX);
         setTranslateZ(-newZ);

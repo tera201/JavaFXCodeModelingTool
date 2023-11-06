@@ -9,6 +9,7 @@ import org.tera201.elements.SpaceObject;
 
 public class ClassCircle extends HollowCylinder implements SpaceObject, Selectable {
     private final String name;
+    private String path;
     private Tooltip tooltip;
     private final Color defaultColor = Color.LIGHTBLUE;
     private SelectionManager selectionManager;
@@ -16,6 +17,7 @@ public class ClassCircle extends HollowCylinder implements SpaceObject, Selectab
     public ClassCircle(String name, double radiusOuter, double radiusInner, double height) {
         super(radiusOuter, radiusInner, height);
         this.name = name;
+        this.path = name;
         PhongMaterial material = new PhongMaterial();
         material.setDiffuseColor(defaultColor);
         material.setSpecularColor(Color.BLACK);
@@ -25,6 +27,16 @@ public class ClassCircle extends HollowCylinder implements SpaceObject, Selectab
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getPath() {
+        return path;
+    }
+
+    @Override
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @Override
