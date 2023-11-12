@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MainSubScene extends SubScene {
     private final PerspectiveCamera camera;
     private int scrollSpeed = 5;
-
+    private boolean isDynamicScrollSpeed = false;
     private double mousePosX;
     private double mousePosY;
     private double mouseOldX;
@@ -76,12 +76,7 @@ public class MainSubScene extends SubScene {
             }
         });
 
-        this.setOnScroll((ScrollEvent event) -> {
-            double deltaY = event.getDeltaY();
-            if (Math.abs(deltaY) >= (1 + scrollSpeed)) {
-                camPosition.setZ(camPosition.getZ() + (1 + scrollSpeed) * deltaY);
-            }
-        });
+        addScrollEvent();
 
         this.setOnMousePressed((MouseEvent me) -> {
             mousePressTime.set(System.currentTimeMillis());
@@ -143,10 +138,26 @@ public class MainSubScene extends SubScene {
 
     public void setScrollSpeed(int scrollSpeed) {
         this.scrollSpeed = scrollSpeed;
+        addScrollEvent();
+    }
+    public boolean getIsDynamicScrollSpeed() {
+        return this.isDynamicScrollSpeed;
+    }
+    public void  setIsDynamicScrollSpeed(boolean isDynamicScrollSpeed) {
+        this.isDynamicScrollSpeed = isDynamicScrollSpeed;
+        addScrollEvent();
+    }
+    private void addScrollEvent() {
         this.setOnScroll((ScrollEvent event) -> {
             double deltaY = event.getDeltaY();
-            if (Math.abs(deltaY) >= (1 + scrollSpeed)) {
-                camPosition.setZ(camPosition.getZ() + (1 + scrollSpeed) * deltaY);
+            if (isDynamicScrollSpeed) {
+                if (Math.abs(deltaY) >= (1 + scrollSpeed)) {
+                    camPosition.setZ(camPosition.getZ() + (1 + scrollSpeed) * deltaY);
+                }
+            } else {
+                if (Math.abs(deltaY) >= 0) {
+                    camPosition.setZ(camPosition.getZ() + 5 * (Math.abs(deltaY) / 10) * deltaY);
+                }
             }
         });
     }
