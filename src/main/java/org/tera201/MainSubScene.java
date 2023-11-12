@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class MainSubScene extends SubScene {
     private final PerspectiveCamera camera;
+    private int scrollSpeed = 5;
 
     private double mousePosX;
     private double mousePosY;
@@ -77,7 +78,9 @@ public class MainSubScene extends SubScene {
 
         this.setOnScroll((ScrollEvent event) -> {
             double deltaY = event.getDeltaY();
-            camPosition.setZ( camPosition.getZ() + 5 * deltaY);
+            if (Math.abs(deltaY) >= (1 + scrollSpeed)) {
+                camPosition.setZ(camPosition.getZ() + (1 + scrollSpeed) * deltaY);
+            }
         });
 
         this.setOnMousePressed((MouseEvent me) -> {
@@ -131,6 +134,20 @@ public class MainSubScene extends SubScene {
         this.setOnMouseClicked(event -> {
             if (mousePressTime.get() < 200)
                 root.getSelectionManager().setSelected(null);
+        });
+    }
+
+    public int getScrollSpeed() {
+       return this.scrollSpeed;
+    }
+
+    public void setScrollSpeed(int scrollSpeed) {
+        this.scrollSpeed = scrollSpeed;
+        this.setOnScroll((ScrollEvent event) -> {
+            double deltaY = event.getDeltaY();
+            if (Math.abs(deltaY) >= (1 + scrollSpeed)) {
+                camPosition.setZ(camPosition.getZ() + (1 + scrollSpeed) * deltaY);
+            }
         });
     }
 
