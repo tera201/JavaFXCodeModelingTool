@@ -11,6 +11,8 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import org.tera201.elements.FXSpace;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MainSubScene extends SubScene {
@@ -33,6 +35,8 @@ public class MainSubScene extends SubScene {
     private Point3D vecPos;
     private double distance;
     private Shape3D s;
+    private Instant scrollTime = Instant.now();
+    private Integer scrollNum = 0;
     public MainSubScene(@NamedArg("root") FXSpace root, @NamedArg("width") double width, @NamedArg("height") double height,
                         @NamedArg("depthBuffer") boolean depthBuffer, @NamedArg("antiAliasing") SceneAntialiasing antiAliasing) {
         super(root, width, height, depthBuffer, antiAliasing);
@@ -150,13 +154,21 @@ public class MainSubScene extends SubScene {
     private void addScrollEvent() {
         this.setOnScroll((ScrollEvent event) -> {
             double deltaY = event.getDeltaY();
+            double timeDiff = 1.;
+            if (scrollNum == 0 ) scrollTime = Instant.now();
+            if (ChronoUnit.MILLIS.between(scrollTime, Instant.now()) < 1000) {
+                scrollNum +=1;
+            } else scrollNum = 0;
+            if (scrollNum >= 5) {
+                timeDiff = ChronoUnit.MILLIS.between(scrollTime, Instant.now()) / 1000.0;
+            }
             if (isDynamicScrollSpeed) {
                 if (Math.abs(deltaY) >= (1 + scrollSpeed)) {
                     camPosition.setZ(camPosition.getZ() + (1 + scrollSpeed) * deltaY);
                 }
             } else {
                 if (Math.abs(deltaY) >= 0) {
-                    camPosition.setZ(camPosition.getZ() + 5 * (Math.abs(deltaY) / 10) * deltaY);
+                    camPosition.setZ(camPosition.getZ() + (5. / timeDiff) * (Math.abs(deltaY) / 10) * deltaY);
                 }
             }
         });
