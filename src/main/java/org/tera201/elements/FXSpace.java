@@ -2,7 +2,10 @@ package org.tera201.elements;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.transform.Translate;
 import org.tera201.SelectionManager;
+import org.tera201.elements.circle.PackageCircle;
+import org.tera201.elements.city.City;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +16,8 @@ public class FXSpace<T> extends Group {
     private SpaceListObject<T> mainObject;
     private final List<SpaceListObject<T>> mainListObjects = new ArrayList<>();
     private SelectionManager selectionManager;
+
+    private Translate camPosition;
 
     public FXSpace() {}
 
@@ -74,6 +79,24 @@ public class FXSpace<T> extends Group {
 
     public void setMainObject(SpaceListObject<T> spaceListObject) {
         mainObject = spaceListObject;
+    }
+
+    public void updateView() {
+        mainListObjects.forEach(it -> it.updateView());
+        resetDefaultCamPosition();
+    }
+
+    public void setCamPosition(Translate camPosition) {
+        this.camPosition = camPosition;
+    }
+
+    public void resetDefaultCamPosition() {
+        if (camPosition != null && mainObject != null) {
+            if (mainObject instanceof PackageCircle packageCircle)
+                camPosition.setZ(-packageCircle.getOuterRadius() * 2);
+            if (mainObject instanceof City city)
+                camPosition.setZ(-Math.max(city.getWidth(), city.getDepth()));
+        }
     }
 }
 

@@ -27,15 +27,15 @@ public class CircleMainScene extends Application {
         ClassCircle circle7 = new ClassCircle("17", 300, 200, 100);
         packageCircle.addAllObjects(circle, circle2, circle3, circle4, circle5, circle6, circle7);
 
-        packageCircle.updateView();
-
         FXSpace<HollowCylinder> fxSpace = new FXSpace<>(packageCircle);
 
         MainSubScene mainSubScene = new MainSubScene(fxSpace, SCENE_WIDTH, SCENE_HEIGHT, true, SceneAntialiasing.BALANCED);
         StackPane stackPane = new StackPane(mainSubScene);
+        fxSpace.updateView();
 
         InfoPane infoPane = new InfoPane();
         infoPane.setMainPane(stackPane);
+        System.out.println(packageCircle.getOuterRadius() * 2);
         SelectionManager selectionManager = new SelectionManager(infoPane);
         fxSpace.setSelectionManager(selectionManager);
 

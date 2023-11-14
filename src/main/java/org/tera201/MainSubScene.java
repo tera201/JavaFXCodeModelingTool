@@ -25,8 +25,9 @@ public class MainSubScene extends SubScene {
     private double mouseOldY;
     private final Rotate rotateX = new Rotate(-90, Rotate.X_AXIS);
     private final Rotate rotateY = new Rotate(0, Rotate.Y_AXIS);
+    private double defaultCamZPosition = -10000.0;
 
-    private final Translate camPosition = new Translate(0, 0, -10000);
+    private final Translate camPosition = new Translate(0, 0, defaultCamZPosition);
 
     private volatile boolean spaceIsPressed=false;
 
@@ -50,6 +51,9 @@ public class MainSubScene extends SubScene {
         camera.setNearClip(0.1);
         camera.setFarClip(100000.0);
         camera.getTransforms().addAll(rotateX, rotateY, camPosition);
+        camera.setFieldOfView(60);
+
+        root.setCamPosition(camPosition);
 
         PointLight light = new PointLight(Color.GAINSBORO);
 //        light.getTransforms().add(new Translate(0, 0, -1000));
@@ -156,19 +160,29 @@ public class MainSubScene extends SubScene {
             double deltaY = event.getDeltaY();
             double timeDiff = 1.;
             if (scrollNum == 0 ) scrollTime = Instant.now();
-            if (ChronoUnit.MILLIS.between(scrollTime, Instant.now()) < 1000) {
+            if (ChronoUnit.MILLIS.between(scrollTime, Instant.now()) < 200) {
                 scrollNum +=1;
-            } else scrollNum = 0;
-            if (scrollNum >= 5) {
-                timeDiff = ChronoUnit.MILLIS.between(scrollTime, Instant.now()) / 1000.0;
+            } else {
+                scrollNum = 0;
+                timeDiff = 1.;
             }
+            if (scrollNum >= 5) {
+                timeDiff = 2 * ChronoUnit.MILLIS.between(scrollTime, Instant.now()) / 1000.0;
+            }
+            scrollTime = Instant.now();
             if (isDynamicScrollSpeed) {
                 if (Math.abs(deltaY) >= (1 + scrollSpeed)) {
-                    camPosition.setZ(camPosition.getZ() + (1 + scrollSpeed) * deltaY);
+                    double  newPosition = camPosition.getZ() + (1 + scrollSpeed) * deltaY;
+                    newPosition = newPosition <= 0 ? newPosition : 0;
+                    newPosition = Math.max(newPosition, defaultCamZPosition * 10);
+                    camPosition.setZ(newPosition);
                 }
             } else {
                 if (Math.abs(deltaY) >= 0) {
-                    camPosition.setZ(camPosition.getZ() + (5. / timeDiff) * (Math.abs(deltaY) / 10) * deltaY);
+                    double  newPosition = camPosition.getZ() + (5. / timeDiff) * deltaY;
+                    newPosition = newPosition <= 0 ? newPosition : 0;
+                    newPosition = Math.max(newPosition, defaultCamZPosition * 10);
+                    camPosition.setZ(newPosition);
                 }
             }
         });
