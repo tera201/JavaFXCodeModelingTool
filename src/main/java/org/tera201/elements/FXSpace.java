@@ -47,9 +47,11 @@ public class FXSpace<T> extends Group {
         selectionManager.cleanObserver();
         mainListObjects.forEach(it -> it.setSelectionManager(null));
         mainListObjects.clear();
-        mainObject.setSelectionManager(null);
-        mainObject.clear();
-        mainObject = null;
+        if (mainObject != null) {
+            mainObject.setSelectionManager(null);
+            mainObject.clear();
+            mainObject = null;
+        }
     }
 
     public void setSelectionManager(SelectionManager selectionManager) {
