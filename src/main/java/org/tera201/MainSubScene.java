@@ -54,6 +54,7 @@ public class MainSubScene extends SubScene {
         camera.setFieldOfView(60);
 
         root.setCamPosition(camPosition);
+        root.setMainSubScene(this);
 
         PointLight light = new PointLight(Color.GAINSBORO);
 //        light.getTransforms().add(new Translate(0, 0, -1000));
@@ -140,6 +141,10 @@ public class MainSubScene extends SubScene {
         });
     }
 
+    public void setDefaultCamZPosition(Double defaultCamZPosition) {
+        this.defaultCamZPosition = defaultCamZPosition;
+    }
+
     public int getScrollSpeed() {
        return this.scrollSpeed;
     }
@@ -170,7 +175,7 @@ public class MainSubScene extends SubScene {
                 timeDiff = 2 * ChronoUnit.MILLIS.between(scrollTime, Instant.now()) / 1000.0;
             }
             scrollTime = Instant.now();
-            if (isDynamicScrollSpeed) {
+            if (!isDynamicScrollSpeed) {
                 if (Math.abs(deltaY) >= (1 + scrollSpeed)) {
                     double  newPosition = camPosition.getZ() + (1 + scrollSpeed) * deltaY;
                     newPosition = newPosition <= 0 ? newPosition : 0;
@@ -179,7 +184,8 @@ public class MainSubScene extends SubScene {
                 }
             } else {
                 if (Math.abs(deltaY) >= 0) {
-                    double  newPosition = camPosition.getZ() + (5. / timeDiff) * deltaY;
+                    Double  newPosition = camPosition.getZ() + (5. / timeDiff) * deltaY;
+                    if (newPosition.isNaN() || newPosition.isInfinite() || newPosition > 0 || newPosition < defaultCamZPosition * 10) return;
                     newPosition = newPosition <= 0 ? newPosition : 0;
                     newPosition = Math.max(newPosition, defaultCamZPosition * 10);
                     camPosition.setZ(newPosition);

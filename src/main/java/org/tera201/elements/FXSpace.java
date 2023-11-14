@@ -3,6 +3,7 @@ package org.tera201.elements;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.transform.Translate;
+import org.tera201.MainSubScene;
 import org.tera201.SelectionManager;
 import org.tera201.elements.circle.PackageCircle;
 import org.tera201.elements.city.City;
@@ -18,6 +19,7 @@ public class FXSpace<T> extends Group {
     private SelectionManager selectionManager;
 
     private Translate camPosition;
+    private MainSubScene mainSubScene;
 
     public FXSpace() {}
 
@@ -90,12 +92,20 @@ public class FXSpace<T> extends Group {
         this.camPosition = camPosition;
     }
 
+    public void setMainSubScene(MainSubScene mainSubScene) {
+        this.mainSubScene = mainSubScene;
+    }
+
     public void resetDefaultCamPosition() {
+        Double defaultCamPosition = null;
         if (camPosition != null && mainObject != null) {
             if (mainObject instanceof PackageCircle packageCircle)
-                camPosition.setZ(-packageCircle.getOuterRadius() * 2);
+                defaultCamPosition = -packageCircle.getOuterRadius() * 2;
             if (mainObject instanceof City city)
-                camPosition.setZ(-Math.max(city.getWidth(), city.getDepth()));
+                defaultCamPosition = -Math.max(city.getWidth(), city.getDepth());
+        }
+        if (defaultCamPosition != null) {
+            mainSubScene.setDefaultCamZPosition(defaultCamPosition);
         }
     }
 }
