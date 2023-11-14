@@ -212,30 +212,31 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     }
 
     private double getOptimalRadius() {
-        double step = 100;
+        double step = 1000;
         updateCircleOrder();
         double minR = 2 * orderList.get(0).getOuterRadius();
         Double gap = getAngleGap(getAngleForRadius(orderList, minR));
         double oldGap = 0;
-        boolean nestedRadiusFit;
+        boolean nestedRadiusFit = checkLinesBtNestedCirclesCenters();
         byte changed = (byte) (gap > 0 ? 2 : 1);
-        while (gap < 0 || gap > 0.1) {
-            if (gap < 0) {
+        while ((gap < 0 || gap > 0.1) && step > 10) {
+            if (gap < 0 || !nestedRadiusFit) {
                 changed = (byte) (changed == 2 ? 0 : 1);
                 step = changed == 0 ? step/2 : step;
                 minR += step;
+                changed = 1;
             } else {
                 changed = (byte) (changed == 1 ? 0 : 2);
                 step = changed == 0 ? step/2 : step;
                 minR -= step;
+                changed = 2;
             }
             gap = getAngleGap(getAngleForRadius(orderList, minR));
             nestedRadiusFit = checkLinesBtNestedCirclesCenters();
-            if (gap.isNaN() || (gap > 0 && !nestedRadiusFit)){
+            if (gap.isNaN()){
                 minR += changed==1?-step:step;
                 step /= 2;
                 gap = oldGap;
-                if (step < 10) break;
             }
             oldGap = gap;
         }
