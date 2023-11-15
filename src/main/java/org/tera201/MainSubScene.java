@@ -176,7 +176,8 @@ public class MainSubScene extends SubScene {
             if (scrollNum >= 5) {
                 timeDiff = 2 * ChronoUnit.MILLIS.between(scrollTime, Instant.now()) / 1000.0;
             }
-            scrollTime = Instant.now();
+            if (Math.abs(deltaY) > 0)
+                scrollTime = Instant.now();
             if (!isDynamicScrollSpeed) {
                 if (Math.abs(deltaY) >= (1 + scrollSpeed)) {
                     double  newPosition = camPosition.getZ() + (1 + scrollSpeed) * deltaY;
@@ -185,15 +186,19 @@ public class MainSubScene extends SubScene {
                     camPosition.setZ(newPosition);
                 }
             } else {
-                if (Math.abs(deltaY) >= 0) {
-                    Double  newPosition = camPosition.getZ() + (5. / timeDiff) * deltaY;
-                    if (newPosition.isNaN() || newPosition.isInfinite() || newPosition > 0 || newPosition < defaultCamZPosition * 10) return;
-                    newPosition = newPosition <= 0 ? newPosition : 0;
-                    newPosition = Math.max(newPosition, defaultCamZPosition * 10);
+                if (Math.abs(deltaY) > 0) {
+                    double maxNewPositionPerScroll = defaultCamZPosition / 10;
+                    double newDelta  = Math.signum(deltaY) * Math.min(-maxNewPositionPerScroll, Math.abs((5. / timeDiff) * deltaY));
+                    Double  newPosition = camPosition.getZ() + newDelta;
+                    if (!newPositionForCamIsOk(newPosition)) return;
                     camPosition.setZ(newPosition);
                 }
             }
         });
+    }
+
+    private boolean newPositionForCamIsOk(Double newPosition) {
+        return !(newPosition.isNaN() || newPosition.isInfinite() || newPosition > 0 || newPosition < defaultCamZPosition * 10);
     }
 
     /*
