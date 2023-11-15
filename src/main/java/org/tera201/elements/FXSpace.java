@@ -17,8 +17,6 @@ public class FXSpace<T> extends Group {
     private SpaceListObject<T> mainObject;
     private final List<SpaceListObject<T>> mainListObjects = new ArrayList<>();
     private SelectionManager selectionManager;
-
-    private Translate camPosition;
     private MainSubScene mainSubScene;
 
     public FXSpace() {}
@@ -88,17 +86,13 @@ public class FXSpace<T> extends Group {
         resetDefaultCamPosition();
     }
 
-    public void setCamPosition(Translate camPosition) {
-        this.camPosition = camPosition;
-    }
-
     public void setMainSubScene(MainSubScene mainSubScene) {
         this.mainSubScene = mainSubScene;
     }
 
     public void resetDefaultCamPosition() {
         Double defaultCamPosition = null;
-        if (camPosition != null && mainObject != null) {
+        if (mainObject != null) {
             if (mainObject instanceof PackageCircle packageCircle)
                 defaultCamPosition = -packageCircle.getOuterRadius() * 2;
             if (mainObject instanceof City city)
@@ -106,6 +100,7 @@ public class FXSpace<T> extends Group {
         }
         if (defaultCamPosition != null) {
             mainSubScene.setDefaultCamZPosition(defaultCamPosition);
+            mainSubScene.resetDefaultCamZPosition();
         }
     }
 }

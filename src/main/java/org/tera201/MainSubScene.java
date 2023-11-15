@@ -52,8 +52,6 @@ public class MainSubScene extends SubScene {
         camera.setFarClip(100000.0);
         camera.getTransforms().addAll(rotateX, rotateY, camPosition);
         camera.setFieldOfView(60);
-
-        root.setCamPosition(camPosition);
         root.setMainSubScene(this);
 
         PointLight light = new PointLight(Color.GAINSBORO);
@@ -143,6 +141,10 @@ public class MainSubScene extends SubScene {
 
     public void setDefaultCamZPosition(Double defaultCamZPosition) {
         this.defaultCamZPosition = defaultCamZPosition;
+    }
+
+    public void resetDefaultCamZPosition() {
+        camPosition.setZ(defaultCamZPosition);
     }
 
     public int getScrollSpeed() {
