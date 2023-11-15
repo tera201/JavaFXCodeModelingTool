@@ -114,8 +114,8 @@ public class MainSubScene extends SubScene {
                     isPicking=false;
                 }
             } else if (spaceIsPressed) {
-                camPosition.setX(camPosition.getX() - (mousePosX - mouseOldX) * camPosition.getZ() / -5000);
-                camPosition.setY(camPosition.getY() - (mousePosY - mouseOldY) * camPosition.getZ() / -5000);
+                camPosition.setX(camPosition.getX() - (mousePosX - mouseOldX) * camPosition.getZ() / -1000);
+                camPosition.setY(camPosition.getY() - (mousePosY - mouseOldY) * camPosition.getZ() / -1000);
             } else {
                 double newXRotate = rotateX.getAngle() - 0.5 * (mousePosY - mouseOldY);
                 double newYRotate = rotateY.getAngle() - 0.5 * (mousePosX - mouseOldX);
