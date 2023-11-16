@@ -168,7 +168,8 @@ public class MainSubScene extends SubScene {
             double timeDiff = 1.;
             if (scrollNum == 0 ) scrollTime = Instant.now();
             if (ChronoUnit.MILLIS.between(scrollTime, Instant.now()) < 200) {
-                scrollNum +=1;
+                if (Math.abs(deltaY) > 0)
+                    scrollNum +=1;
             } else {
                 scrollNum = 0;
                 timeDiff = 1.;
