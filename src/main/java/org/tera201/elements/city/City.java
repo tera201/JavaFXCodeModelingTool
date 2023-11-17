@@ -177,6 +177,16 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
     }
 
     @Override
+    public String getPath() {
+        return null;
+    }
+
+    @Override
+    public void setPath(String path) {
+
+    }
+
+    @Override
     public void setPosition(double newX, double newZ) {
     }
 

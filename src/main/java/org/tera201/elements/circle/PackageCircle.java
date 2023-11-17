@@ -6,14 +6,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import org.tera201.SelectionManager;
 import org.tera201.elements.Selectable;
+import org.tera201.elements.SelectionObserver;
 import org.tera201.elements.SpaceListObject;
 import org.tera201.elements.SpaceObject;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-public class PackageCircle extends HollowCylinder implements SpaceListObject<HollowCylinder>, AddNewPosition, Selectable {
+public class PackageCircle extends HollowCylinder implements SpaceListObject<HollowCylinder>, AddNewPosition,
+        Selectable, SelectionObserver {
     private String name;
+    private String path = "";
     private Tooltip tooltip;
     private final Point lastPoint = new Point();
     private final Group group = new Group();
@@ -31,10 +35,21 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         setMaterial(material);
         group.getChildren().add(this);
         this.name = name;
+        this.path = name;
     }
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getPath() {
+        return path;
+    }
+
+    @Override
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @Override
@@ -59,9 +74,15 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     @Override
     public void setSelectionManager(SelectionManager selectionManager) {
         circles.values().forEach(it -> ((SpaceObject) it).setSelectionManager(selectionManager));
+        AtomicLong mousePressTime = new AtomicLong();
         this.selectionManager = selectionManager;
+        if (selectionManager != null)
+            selectionManager.addObserver(this);
+
+        this.setOnMousePressed(event -> mousePressTime.set(System.currentTimeMillis()));
+        this.setOnMouseReleased(event -> mousePressTime.set(System.currentTimeMillis() - mousePressTime.get()));
         this.setOnMouseClicked(event -> {
-            if (selectionManager != null) {
+            if (selectionManager != null && mousePressTime.get() < 200) {
                 this.selectionManager.setSelected(this);
             }
             event.consume();  // stop event propagation
@@ -77,7 +98,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     public String getInfo() {
         return circles.values().stream().map(it ->
             ((SpaceObject) it).getName() + " r:" + it.getInnerRadius() + " R:" + it.getOuterRadius() + "\n"
-        ).collect(Collectors.joining());
+        ).collect(Collectors.joining()) + path;
     }
 
     @Override
@@ -97,10 +118,15 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     @Override
     public void addObject(HollowCylinder circle) {
         circles.put(((SpaceObject) circle).getName(), circle);
-        if (circle instanceof PackageCircle packageCircle)
+        if (circle instanceof PackageCircle packageCircle) {
             group.getChildren().add(packageCircle.getGroup());
-        else
-            group.getChildren().add(circle);
+            packageCircle.setPath(path + ":" + packageCircle.getName());
+        }
+        else if (circle instanceof ClassCircle classCircle){
+            group.getChildren().add(classCircle);
+            classCircle.setPath(path + ":" + classCircle.getName());
+        }
+
         setCirclePosition(circle);
         ((SpaceObject) circle).setSelectionManager(selectionManager);
     }
@@ -186,30 +212,31 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     }
 
     private double getOptimalRadius() {
-        double step = 100;
+        double step = 1000;
         updateCircleOrder();
         double minR = 2 * orderList.get(0).getOuterRadius();
         Double gap = getAngleGap(getAngleForRadius(orderList, minR));
         double oldGap = 0;
-        boolean nestedRadiusFit;
+        boolean nestedRadiusFit = checkLinesBtNestedCirclesCenters();
         byte changed = (byte) (gap > 0 ? 2 : 1);
-        while (gap < 0 || gap > 0.1) {
-            if (gap < 0) {
+        while ((gap < 0 || gap > 0.1) && step > 10) {
+            if (gap < 0 || !nestedRadiusFit) {
                 changed = (byte) (changed == 2 ? 0 : 1);
                 step = changed == 0 ? step/2 : step;
                 minR += step;
+                changed = 1;
             } else {
                 changed = (byte) (changed == 1 ? 0 : 2);
                 step = changed == 0 ? step/2 : step;
                 minR -= step;
+                changed = 2;
             }
             gap = getAngleGap(getAngleForRadius(orderList, minR));
             nestedRadiusFit = checkLinesBtNestedCirclesCenters();
-            if (gap.isNaN() || (gap > 0 && !nestedRadiusFit)){
+            if (gap.isNaN()){
                 minR += changed==1?-step:step;
                 step /= 2;
                 gap = oldGap;
-                if (step < 10) break;
             }
             oldGap = gap;
         }
@@ -240,6 +267,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     public void removeObject(HollowCylinder circle) {
         group.getChildren().remove(circle);
         circles.remove(((SpaceObject) circle).getName());
+        selectionManager.removeObserver(((SelectionObserver) circle));
     }
 
     @Override
@@ -272,6 +300,35 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
             orderList.forEach(this::setCirclePosition);
             orderList.forEach(it -> ((SpaceObject) it).setSelectionManager(selectionManager));
         }
+    }
+
+    @Override
+    public void onSelectionChanged(Selectable newSelection) {
+        if (this.equals(newSelection) || newSelection == null ) {
+            this.setVisible(true);
+        } else {
+            String selectedPath = ((SpaceObject)newSelection).getPath();
+            if (getFirstPathNode(selectedPath).equals(getFirstPathNode(path)) ||
+                    getPathWithoutFirstNode(selectedPath).equals(getPathWithoutFirstNode(path)))
+                this.setVisible(true);
+            else this.setVisible(false);
+        }
+    }
+
+    private String getFirstPathNode(String path) {
+        int dotIndex = path.indexOf(':');
+        if (dotIndex != -1) {
+            return path.substring(0, dotIndex);
+        }
+        return path;
+    }
+
+    private String getPathWithoutFirstNode(String path) {
+        int dotIndex = path.lastIndexOf(':');
+        if (dotIndex != -1) {
+            return path.substring(dotIndex, path.length() - 1);
+        }
+        return path;
     }
 
     private static class CirclePosition {

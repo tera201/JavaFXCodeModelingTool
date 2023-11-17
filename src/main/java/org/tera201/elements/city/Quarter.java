@@ -77,6 +77,16 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
 
     public String getName() { return this.name; }
 
+    @Override
+    public String getPath() {
+        return null;
+    }
+
+    @Override
+    public void setPath(String path) {
+
+    }
+
     public City getCity() { return  this.city; }
 
     public void setCity(City city) {
