@@ -38,6 +38,7 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     public Quarter(String name, double width, double height, double depth, double separate) {
         super(width, height, depth);
         this.name = name;
+        setTranslateY(height / 2);
         this.separate = separate;
         lastPoint = new Point(this, separate);
         group.getChildren().add(this);
