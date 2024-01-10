@@ -254,7 +254,8 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     private void nestedOptimize() {
         circles.values().stream().filter(PackageCircle.class::isInstance).map(PackageCircle.class::cast).forEach(PackageCircle::nestedOptimize);
         if (circles.size() == 1 && circles.values().stream().findFirst().get() instanceof PackageCircle packageCircle) {
-            name += "." + packageCircle.getName();
+            name += ":" + packageCircle.getName();
+            path = packageCircle.getPath();
             packageCircle.group.getChildren().clear();
             Map<String, HollowCylinder> nestedCircles = packageCircle.getNestedCircles();
             clear();
