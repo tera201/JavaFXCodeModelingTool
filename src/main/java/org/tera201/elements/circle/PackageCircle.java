@@ -43,7 +43,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     }
 
     @Override
-    public String getPath() {
+    public String getObjectPath() {
         return path;
     }
 
@@ -103,7 +103,12 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
 
     @Override
     public String getHeader() {
-        return name + " " + getInnerRadius();
+        return name;
+    }
+
+    @Override
+    public String getPath() {
+        return path;
     }
 
     @Override
@@ -120,11 +125,9 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         circles.put(((SpaceObject) circle).getName(), circle);
         if (circle instanceof PackageCircle packageCircle) {
             group.getChildren().add(packageCircle.getGroup());
-            packageCircle.setPath(path + ":" + packageCircle.getName());
         }
         else if (circle instanceof ClassCircle classCircle){
             group.getChildren().add(classCircle);
-            classCircle.setPath(path + ":" + classCircle.getName());
         }
 
         setCirclePosition(circle);
@@ -215,7 +218,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         double step = 1000;
         updateCircleOrder();
         double minR = 2 * orderList.get(0).getOuterRadius();
-        Double gap = getAngleGap(getAngleForRadius(orderList, minR));
+        double gap = getAngleGap(getAngleForRadius(orderList, minR));
         double oldGap = 0;
         boolean nestedRadiusFit = checkLinesBtNestedCirclesCenters();
         byte changed = (byte) (gap > 0 ? 2 : 1);
@@ -233,7 +236,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
             }
             gap = getAngleGap(getAngleForRadius(orderList, minR));
             nestedRadiusFit = checkLinesBtNestedCirclesCenters();
-            if (gap.isNaN()){
+            if (Double.isNaN(gap)){
                 minR += changed==1?-step:step;
                 step /= 2;
                 gap = oldGap;
@@ -261,6 +264,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
             clear();
             nestedCircles.values().forEach(this::addObject);
             packageCircle.clear();
+            circles.remove(packageCircle.path);
         }
     }
 

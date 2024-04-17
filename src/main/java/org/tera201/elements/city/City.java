@@ -17,6 +17,7 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
 
     private static final double SEPARATE = 50.0;
     private final Point lastPoint;
+    private final String name;
 
     private final Group group = new Group();
 
@@ -25,7 +26,11 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
     private final Map<String,Quarter> quarters = new HashMap<>();
     private SelectionManager selectionManager;
     public City(double width, double height, double depth) {
+        this(width, height, depth, "");
+    }
+    public City(double width, double height, double depth, String name) {
         super(width, height, depth);
+        this.name = name;
         PhongMaterial material = new PhongMaterial();
         material.setDiffuseColor(Color.GRAY);
         material.setSpecularColor(Color.BLACK);
@@ -38,6 +43,7 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
     @Override
     public void addObject(Quarter quarter) {
         this.quarters.put(quarter.getName(), quarter);
+        quarter.setPath(name + ":" + quarter.getPath());
         this.group.getChildren().add(quarter.getGroup());
         setQuarterPosition(quarter);
         quarter.setSelectionManager(selectionManager);

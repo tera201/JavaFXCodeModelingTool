@@ -59,6 +59,12 @@ public class FXSpace<T> extends Group {
         }
     }
 
+//    public SpaceObject getObjectByPath(String mainName, String path) {
+//        if (mainListObjects.stream().anyMatch(o -> o.getName().equals(mainName))) {
+//            return mainListObjects.stream().filter(o -> o.getName().equals(path)).findFirst().orElse(null);
+//        }
+//    }
+
     public void setSelectionManager(SelectionManager selectionManager) {
         this.selectionManager = selectionManager;
         mainObject.setSelectionManager(selectionManager);
