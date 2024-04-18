@@ -125,13 +125,28 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         circles.put(((SpaceObject) circle).getName(), circle);
         if (circle instanceof PackageCircle packageCircle) {
             group.getChildren().add(packageCircle.getGroup());
+            packageCircle.setPath(path + ":" + packageCircle.getName());
         }
         else if (circle instanceof ClassCircle classCircle){
             group.getChildren().add(classCircle);
+            classCircle.setPath(path + ":" + classCircle.getName());
         }
 
         setCirclePosition(circle);
         ((SpaceObject) circle).setSelectionManager(selectionManager);
+    }
+
+    @Override
+    public SpaceObject findObjectByPath(String path) {
+        if (this.path.equals(path)) {return this;}
+        else return (SpaceObject) circles.values().stream().map(circle -> {
+            if (((SpaceObject) circle).getPath().equals(path)) {
+                return circle;
+            } else if (path.startsWith(((SpaceObject) circles).getPath()) && (circle instanceof PackageCircle packageCircle)) {
+                    return packageCircle.findObjectByPath(path);
+
+            } else return null;
+        }).filter(Objects::nonNull).findFirst().orElse(null);
     }
 
     @Override
@@ -258,7 +273,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         circles.values().stream().filter(PackageCircle.class::isInstance).map(PackageCircle.class::cast).forEach(PackageCircle::nestedOptimize);
         if (circles.size() == 1 && circles.values().stream().findFirst().get() instanceof PackageCircle packageCircle) {
             name += ":" + packageCircle.getName();
-            path = packageCircle.getPath();
+            path += ":" + packageCircle.getPath();
             packageCircle.group.getChildren().clear();
             Map<String, HollowCylinder> nestedCircles = packageCircle.getNestedCircles();
             clear();

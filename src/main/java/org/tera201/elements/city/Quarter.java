@@ -8,6 +8,7 @@ import javafx.scene.shape.Box;
 import org.tera201.SelectionManager;
 import org.tera201.elements.Selectable;
 import org.tera201.elements.SpaceListObject;
+import org.tera201.elements.SpaceObject;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -116,6 +117,11 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
         setBuildingPosition(building);
         building.setSelectionManager(selectionManager);
         building.setPath(path + ":" + building.getPath());
+    }
+
+    @Override
+    public SpaceObject findObjectByPath(String path) {
+        return buildings.values().stream().filter(it -> it.getPath().equals(path)).findFirst().orElse(null);
     }
 
     public void setBuildingPosition(Building building) {

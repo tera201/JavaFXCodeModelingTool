@@ -2,7 +2,6 @@ package org.tera201.elements;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.transform.Translate;
 import org.tera201.MainSubScene;
 import org.tera201.SelectionManager;
 import org.tera201.elements.circle.PackageCircle;
@@ -11,6 +10,7 @@ import org.tera201.elements.city.City;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class FXSpace<T> extends Group {
 
@@ -59,11 +59,12 @@ public class FXSpace<T> extends Group {
         }
     }
 
-//    public SpaceObject getObjectByPath(String mainName, String path) {
-//        if (mainListObjects.stream().anyMatch(o -> o.getName().equals(mainName))) {
-//            return mainListObjects.stream().filter(o -> o.getName().equals(path)).findFirst().orElse(null);
-//        }
-//    }
+    public SpaceObject getObjectByPath(String mainName, String path) {
+        if (mainListObjects.stream().anyMatch(o -> o.getName().equals(mainName))) {
+            return mainListObjects.stream().filter(o -> o.getName().equals(mainName)).map(o -> o.findObjectByPath(path)).filter(Objects::nonNull).findFirst().orElse(null);
+        }
+        return null;
+    }
 
     public void setSelectionManager(SelectionManager selectionManager) {
         this.selectionManager = selectionManager;
