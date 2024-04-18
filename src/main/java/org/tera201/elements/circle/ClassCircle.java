@@ -33,7 +33,7 @@ public class ClassCircle extends HollowCylinder implements SpaceObject, Selectab
     }
 
     @Override
-    public String getPath() {
+    public String getObjectPath() {
         return path;
     }
 
@@ -91,6 +91,11 @@ public class ClassCircle extends HollowCylinder implements SpaceObject, Selectab
     @Override
     public String getHeader() {
         return name;
+    }
+
+    @Override
+    public String getPath() {
+        return path;
     }
 
     @Override

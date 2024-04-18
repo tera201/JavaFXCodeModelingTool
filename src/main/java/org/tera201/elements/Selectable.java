@@ -6,4 +6,6 @@ public interface Selectable {
     String getInfo();
 
     String getHeader();
+
+    String getObjectPath();
 }

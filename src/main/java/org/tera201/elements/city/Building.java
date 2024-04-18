@@ -12,6 +12,7 @@ public class Building extends Box implements SpaceObject, Selectable {
     private final String name;
     private Tooltip tooltip;
     private String info;
+    private String path = "";
     private SelectionManager selectionManager;
     public Building(double width, double height, double depth) {
         this(null, width, height, depth);
@@ -19,6 +20,7 @@ public class Building extends Box implements SpaceObject, Selectable {
     public Building(String name, double width, double height, double depth) {
         super(width, height, depth);
         this.name = name;
+        this.path = name;
         setTranslateY(-height / 2);
         PhongMaterial material = new PhongMaterial();
         material.setDiffuseColor(Color.PURPLE);
@@ -46,6 +48,11 @@ public class Building extends Box implements SpaceObject, Selectable {
         return name;
     }
 
+    @Override
+    public String getObjectPath() {
+        return path;
+    }
+
     private Tooltip ensureTooltip() {
         if(tooltip == null) {
             tooltip = new Tooltip(name);
@@ -64,12 +71,12 @@ public class Building extends Box implements SpaceObject, Selectable {
 
     @Override
     public String getPath() {
-        return null;
+        return path;
     }
 
     @Override
     public void setPath(String path) {
-
+        this.path = path;
     }
 
     @Override

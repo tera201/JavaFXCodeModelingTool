@@ -23,7 +23,7 @@ public class SelectionManager {
         selected = selectable;
         if (selected != null) {
             selected.setHighlighted(true);
-            infoPane.updateInfoPane(selected.getHeader(), selected.getInfo());
+            infoPane.updateInfoPane(selected.getHeader(), selected.getObjectPath());
             infoPane.showInfo();
         }
         notifyObservers();

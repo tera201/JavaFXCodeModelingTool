@@ -8,6 +8,7 @@ import javafx.scene.shape.Box;
 import org.tera201.SelectionManager;
 import org.tera201.elements.Selectable;
 import org.tera201.elements.SpaceListObject;
+import org.tera201.elements.SpaceObject;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -17,6 +18,7 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     private static final double HALF = 0.5;
 
     private String name;
+    private String path = "";
     private final Map<String, Building> buildings = new HashMap<>();
     private City city;
     private final Point lastPoint;
@@ -38,6 +40,8 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     public Quarter(String name, double width, double height, double depth, double separate) {
         super(width, height, depth);
         this.name = name;
+        this.path = name;
+        setTranslateY(height / 2);
         this.separate = separate;
         lastPoint = new Point(this, separate);
         group.getChildren().add(this);
@@ -62,7 +66,12 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
 
     @Override
     public String getHeader() {
-        return String.format("%s {w: %f, h: %f, d: %f} %n", name, this.getWidth(), this.getHeight(), this.getDepth());
+        return  name;
+    }
+
+    @Override
+    public String getObjectPath() {
+        return path;
     }
 
     public void isRotated(boolean rotated) {
@@ -79,12 +88,12 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
 
     @Override
     public String getPath() {
-        return null;
+        return path;
     }
 
     @Override
     public void setPath(String path) {
-
+        this.path = path;
     }
 
     public City getCity() { return  this.city; }
@@ -107,6 +116,12 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
         group.getChildren().add(building);
         setBuildingPosition(building);
         building.setSelectionManager(selectionManager);
+        building.setPath(path + ":" + building.getPath());
+    }
+
+    @Override
+    public SpaceObject findObjectByPath(String path) {
+        return buildings.values().stream().filter(it -> it.getPath().equals(path)).findFirst().orElse(null);
     }
 
     public void setBuildingPosition(Building building) {

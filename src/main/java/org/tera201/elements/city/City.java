@@ -14,18 +14,22 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class City extends Box implements SpaceListObject<Quarter>, AddNewPosition {
     private static final double HALF = 0.5;
-
     private static final double SEPARATE = 50.0;
     private final Point lastPoint;
-
+    private final String name;
+    private String path;
     private final Group group = new Group();
-
     private final List<QuarterPosition> quarterPositionList =  new ArrayList<>();
-
     private final Map<String,Quarter> quarters = new HashMap<>();
     private SelectionManager selectionManager;
+
     public City(double width, double height, double depth) {
+        this(width, height, depth, "");
+    }
+    public City(double width, double height, double depth, String name) {
         super(width, height, depth);
+        this.name = name;
+        this.path = name;
         PhongMaterial material = new PhongMaterial();
         material.setDiffuseColor(Color.GRAY);
         material.setSpecularColor(Color.BLACK);
@@ -38,9 +42,21 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
     @Override
     public void addObject(Quarter quarter) {
         this.quarters.put(quarter.getName(), quarter);
+        quarter.setPath(name + ":" + quarter.getPath());
         this.group.getChildren().add(quarter.getGroup());
         setQuarterPosition(quarter);
         quarter.setSelectionManager(selectionManager);
+    }
+
+    @Override
+    public SpaceObject findObjectByPath(String path) {
+        return quarters.values().stream().map(quarter -> {
+            if (quarter.getPath().equals(path)) {
+                return quarter;
+            } else if (path.startsWith(quarter.getPath())) {
+                return quarter.findObjectByPath(path);
+            } else return null;
+        }).filter(Objects::nonNull).findFirst().orElse(null);
     }
 
     public void setQuarterPosition(Quarter quarter) {
@@ -133,9 +149,11 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
     }
 
     @Override
-    //TODO: add remove from quarterPositionList and update quarter
     public void removeObject(Quarter quarter) {
         this.group.getChildren().remove(quarter.getGroup());
+        quarters.remove(quarter.getName());
+        quarterPositionList.remove(quarter);
+        updateView();
     }
 
     @Override
@@ -173,17 +191,17 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
     public String getPath() {
-        return null;
+        return path;
     }
 
     @Override
     public void setPath(String path) {
-
+        this.path = path;
     }
 
     @Override

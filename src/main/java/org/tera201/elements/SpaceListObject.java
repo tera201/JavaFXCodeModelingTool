@@ -8,6 +8,8 @@ public interface SpaceListObject<T> extends SpaceObject {
 
     void addObject(T object);
 
+    SpaceObject findObjectByPath(String path);
+
     void addAllObjects(T... objects);
 
     void removeObject(T object);
