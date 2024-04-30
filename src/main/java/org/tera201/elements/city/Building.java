@@ -14,6 +14,7 @@ public class Building extends Box implements SpaceObject, Selectable {
     private String info;
     private String path = "";
     private SelectionManager selectionManager;
+    private String filePath;
     public Building(double width, double height, double depth) {
         this(null, width, height, depth);
     }
@@ -75,8 +76,18 @@ public class Building extends Box implements SpaceObject, Selectable {
     }
 
     @Override
+    public String getFilePath() {
+        return filePath;
+    }
+
+    @Override
     public void setPath(String path) {
         this.path = path;
+    }
+
+    @Override
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     @Override

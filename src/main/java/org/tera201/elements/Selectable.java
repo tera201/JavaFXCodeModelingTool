@@ -8,4 +8,5 @@ public interface Selectable {
     String getHeader();
 
     String getObjectPath();
+    String getFilePath();
 }

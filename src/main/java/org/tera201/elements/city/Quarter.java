@@ -23,6 +23,7 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     private City city;
     private final Point lastPoint;
     private Tooltip tooltip;
+    private String filePath;
 
     private final Group group = new Group();
 
@@ -92,8 +93,18 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     }
 
     @Override
+    public String getFilePath() {
+        return filePath;
+    }
+
+    @Override
     public void setPath(String path) {
         this.path = path;
+    }
+
+    @Override
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public City getCity() { return  this.city; }

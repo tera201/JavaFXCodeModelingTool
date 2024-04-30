@@ -26,6 +26,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     private List<HollowCylinder> orderList;
     private final Color defaultColor = Color.DARKGRAY;
     private SelectionManager selectionManager;
+    private String filePath;
 
     public PackageCircle(String name, double radiusOuter, double radiusInner, double height) {
         super(radiusOuter, radiusInner, height);
@@ -50,6 +51,11 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     @Override
     public void setPath(String path) {
         this.path = path;
+    }
+
+    @Override
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     @Override
@@ -109,6 +115,11 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     @Override
     public String getPath() {
         return path;
+    }
+
+    @Override
+    public String getFilePath() {
+        return filePath;
     }
 
     @Override
@@ -273,7 +284,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         circles.values().stream().filter(PackageCircle.class::isInstance).map(PackageCircle.class::cast).forEach(PackageCircle::nestedOptimize);
         if (circles.size() == 1 && circles.values().stream().findFirst().get() instanceof PackageCircle packageCircle) {
             name += ":" + packageCircle.getName();
-            path += ":" + packageCircle.getPath();
+            path = packageCircle.getPath();
             packageCircle.group.getChildren().clear();
             Map<String, HollowCylinder> nestedCircles = packageCircle.getNestedCircles();
             clear();
