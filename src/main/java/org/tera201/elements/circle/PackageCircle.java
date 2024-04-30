@@ -184,7 +184,9 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     }
 
     private Double getStraightLineLen(Double x1, Double z1, Double x2, Double z2) {
-        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(z2 - z1, 2));
+        Double a1 = x2 - x1;
+        Double a2 = z2 - z1;
+        return Math.sqrt(a1 * a1 + a2 * a2);
     }
 
     private void bindCircle(HollowCylinder circle, Double angle) {
@@ -197,7 +199,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         double a = getInnerRadius() - circle.getOuterRadius();
         double b = getInnerRadius() - lastPoint.getR();
         double c = circle.getOuterRadius() + lastPoint.getR();
-        return lastPoint.getAngle() + Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b));
+        return lastPoint.getAngle() + Math.acos((a*a + b*b - c*c) / (2 * a * b));
     }
 
     private boolean checkLinesBtNestedCirclesCenters() {
@@ -206,7 +208,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         double r0 = circlePositionList.get(0).radius;
         for (int c = 1; c < circlePositionList.size(); c++) {
             Double centerLine = getStraightLineLen(x0, z0, circlePositionList.get(c).centerX, circlePositionList.get(c).centerZ);
-            if (centerLine.isNaN() || (centerLine < (r0 + circlePositionList.get(c).radius) - 0.0000001)) return false;
+            if (centerLine.isNaN() || (centerLine < (r0 + circlePositionList.get(c).radius) - 0.001)) return false;
         }
         return true;
     }
@@ -219,20 +221,17 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         circlePositionList.add(new CirclePosition(getNestedCircleXByAngle(orderList.get(0), radius, angle),
                 getNestedCircleZByAngle(orderList.get(0), radius, angle),
                 orderList.get(0).getOuterRadius()));
+        double radiusSquared = radius * radius;
         for (int i = 1; i < orderList.size(); i++) {
-            double a = radius - orderList.get(i).getOuterRadius();
-            double b = radius - point.getR();
-            double c = orderList.get(i).getOuterRadius() + point.getR();
-            angle += Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b));
+            angle += Math.acos((radiusSquared - orderList.get(i).getOuterRadius() * radius - point.getR() * (radius + orderList.get(i).getOuterRadius())) /
+                    ((radius - orderList.get(i).getOuterRadius())*(radius - point.getR())));
             circlePositionList.add(new CirclePosition(getNestedCircleXByAngle(orderList.get(i), radius, angle),
                     getNestedCircleZByAngle(orderList.get(i), radius, angle),
                     orderList.get(i).getOuterRadius()));
             point.setPoint(0, 0, orderList.get(i).getOuterRadius(), angle);
         }
-        double a = radius - orderList.get(0).getOuterRadius();
-        double b = radius - point.getR();
-        double c = orderList.get(0).getOuterRadius() + point.getR();
-        angle += Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b));
+        angle += Math.acos((radiusSquared - orderList.get(0).getOuterRadius() * radius - point.getR() * (radius + orderList.get(0).getOuterRadius())) /
+                ((radius - orderList.get(0).getOuterRadius())*(radius - point.getR())));
         return Math.toDegrees(angle);
     }
 
@@ -248,7 +247,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         double oldGap = 0;
         boolean nestedRadiusFit = checkLinesBtNestedCirclesCenters();
         byte changed = (byte) (gap > 0 ? 2 : 1);
-        while ((gap < 0 || gap > 0.1) && step > 10) {
+        while ((gap < 0 || gap > 10) && step > 10) {
             if (gap < 0 || !nestedRadiusFit) {
                 changed = (byte) (changed == 2 ? 0 : 1);
                 step = changed == 0 ? step/2 : step;
