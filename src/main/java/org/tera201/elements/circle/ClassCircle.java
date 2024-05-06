@@ -16,16 +16,20 @@ public class ClassCircle extends HollowCylinder implements SpaceObject, Selectab
     private Tooltip tooltip;
     private final Color defaultColor = Color.LIGHTBLUE;
     private SelectionManager selectionManager;
+    private PhongMaterial material = new PhongMaterial();
     private String filePath;
 
     public ClassCircle(String name, double radiusOuter, double radiusInner, double height) {
         super(radiusOuter, radiusInner, height);
         this.name = name;
         this.path = name;
-        PhongMaterial material = new PhongMaterial();
         material.setDiffuseColor(defaultColor);
         material.setSpecularColor(Color.BLACK);
         setMaterial(material);
+    }
+
+    public void setColor(Color color) {
+        material.setDiffuseColor(color);
     }
 
     @Override

@@ -10,7 +10,7 @@ public class SelectionManager {
 
     private final InfoPane infoPane;
     private Selectable selected;
-    private static final List<SelectionObserver> observers = new ArrayList<>();
+    private final List<SelectionObserver> observers = new ArrayList<>();
     public SelectionManager(InfoPane infoPane) {
         this.infoPane = infoPane;
     }
@@ -23,7 +23,7 @@ public class SelectionManager {
         selected = selectable;
         if (selected != null) {
             selected.setHighlighted(true);
-            infoPane.updateInfoPane(selected.getHeader(), selected.getObjectPath());
+            infoPane.updateInfoPane(selected.getHeader());
             infoPane.showInfo();
         }
         notifyObservers();
