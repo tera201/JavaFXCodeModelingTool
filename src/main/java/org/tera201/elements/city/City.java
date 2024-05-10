@@ -179,6 +179,10 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
         lastPoint.reset();
     }
 
+    public void updateView(boolean experimental) {
+        updateView();
+    }
+
     public void updateView() {
         clearPosition();
         quarters.values().stream().forEach(Quarter::updateView);

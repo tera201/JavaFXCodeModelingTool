@@ -234,6 +234,10 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
         clearPosition();
     }
 
+    public void updateView(boolean experimental) {
+        updateView();
+    }
+
     public void updateView() {
         clearPosition();
         resize();

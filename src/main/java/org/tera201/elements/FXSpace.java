@@ -93,6 +93,11 @@ public class FXSpace<T> extends Group {
         resetDefaultCamPosition();
     }
 
+    public void updateView(boolean experimental) {
+        mainListObjects.forEach(it -> it.updateView(experimental));
+        resetDefaultCamPosition();
+    }
+
     public void setMainSubScene(MainSubScene mainSubScene) {
         this.mainSubScene = mainSubScene;
     }

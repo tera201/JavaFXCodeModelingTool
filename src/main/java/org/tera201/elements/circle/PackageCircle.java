@@ -239,15 +239,21 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         orderList = circles.values().stream().sorted(Comparator.comparingDouble(HollowCylinder::getOuterRadius).reversed()).toList();
     }
 
-    private double getOptimalRadius() {
-        double step = 1000;
+    private double getOptimalRadius(boolean experimental) {
+//        double step = 1000;
         updateCircleOrder();
-        double minR = 2 * orderList.get(0).getOuterRadius();
+//        int tries = 0;
+//        double minR =  2 * orderList.get(0).getOuterRadius();
+        double step = experimental?  orderList.get(0).getOuterRadius() : 1000;
+        double minR = experimental? orderList.stream().mapToDouble(HollowCylinder::getOuterRadius).sum() : 2 * orderList.get(0).getOuterRadius();
+        System.out.println("experimental: " + experimental);
+//        System.out.println("minR: " + minR);
         double gap = getAngleGap(getAngleForRadius(orderList, minR));
         double oldGap = 0;
         boolean nestedRadiusFit = checkLinesBtNestedCirclesCenters();
         byte changed = (byte) (gap > 0 ? 2 : 1);
-        while ((gap < 0 || gap > 10) && step > 10) {
+        while ((gap < 0 || gap > 10) && step > 10 || !nestedRadiusFit && experimental) {
+//            tries++;
             if (gap < 0 || !nestedRadiusFit) {
                 changed = (byte) (changed == 2 ? 0 : 1);
                 step = changed == 0 ? step/2 : step;
@@ -268,6 +274,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
             }
             oldGap = gap;
         }
+//        System.out.println("tries: " + tries + " gap: " + gap + " nested radius fit: " + nestedRadiusFit);
         return minR;
     }
 
@@ -315,14 +322,17 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         group.getChildren().add(this);
 
     }
+    public void updateView() {
+        updateView(false);
+    }
 
     @Override
-    public void updateView() {
+    public void updateView(boolean experimental) {
         nestedOptimize();
         updateCircleOrder();
-        orderList.stream().filter(PackageCircle.class::isInstance).map(PackageCircle.class::cast).forEach(PackageCircle::updateView);
+        orderList.stream().filter(PackageCircle.class::isInstance).map(PackageCircle.class::cast).forEach(it -> it.updateView(experimental));
         if (!orderList.isEmpty()) {
-            double optimalR = getOptimalRadius();
+            double optimalR = getOptimalRadius(experimental);
             double border = getOuterRadius() - getInnerRadius();
             setInnerRadius(optimalR);
             setOuterRadius(optimalR + border);
