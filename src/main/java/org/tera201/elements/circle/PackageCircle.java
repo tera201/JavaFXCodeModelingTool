@@ -246,7 +246,6 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
 //        double minR =  2 * orderList.get(0).getOuterRadius();
         double step = experimental?  orderList.get(0).getOuterRadius() : 1000;
         double minR = experimental? orderList.stream().mapToDouble(HollowCylinder::getOuterRadius).sum() : 2 * orderList.get(0).getOuterRadius();
-        System.out.println("experimental: " + experimental);
 //        System.out.println("minR: " + minR);
         double gap = getAngleGap(getAngleForRadius(orderList, minR));
         double oldGap = 0;
