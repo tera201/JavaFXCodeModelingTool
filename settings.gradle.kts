@@ -1,0 +1,1 @@
+rootProject.name = "javafx-code-modeling-tool"
