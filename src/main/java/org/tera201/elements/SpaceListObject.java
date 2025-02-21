@@ -19,4 +19,6 @@ public interface SpaceListObject<T> extends SpaceObject {
     void clear();
 
     void updateView();
+
+    void updateView(boolean experimental);
 }

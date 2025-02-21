@@ -14,6 +14,8 @@ public class Building extends Box implements SpaceObject, Selectable {
     private String info;
     private String path = "";
     private SelectionManager selectionManager;
+    private PhongMaterial material = new PhongMaterial();
+    private String filePath;
     public Building(double width, double height, double depth) {
         this(null, width, height, depth);
     }
@@ -22,11 +24,14 @@ public class Building extends Box implements SpaceObject, Selectable {
         this.name = name;
         this.path = name;
         setTranslateY(-height / 2);
-        PhongMaterial material = new PhongMaterial();
         material.setDiffuseColor(Color.PURPLE);
         material.setSpecularColor(Color.BLACK);
         setMaterial(material);
         ensureTooltip().setText(name);
+    }
+
+    public void setColor(Color color) {
+        material.setDiffuseColor(color);
     }
 
     @Override
@@ -75,8 +80,18 @@ public class Building extends Box implements SpaceObject, Selectable {
     }
 
     @Override
+    public String getFilePath() {
+        return filePath;
+    }
+
+    @Override
     public void setPath(String path) {
         this.path = path;
+    }
+
+    @Override
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     @Override

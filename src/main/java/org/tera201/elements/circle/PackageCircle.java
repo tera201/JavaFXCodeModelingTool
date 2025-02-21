@@ -26,6 +26,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     private List<HollowCylinder> orderList;
     private final Color defaultColor = Color.DARKGRAY;
     private SelectionManager selectionManager;
+    private String filePath;
 
     public PackageCircle(String name, double radiusOuter, double radiusInner, double height) {
         super(radiusOuter, radiusInner, height);
@@ -50,6 +51,11 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     @Override
     public void setPath(String path) {
         this.path = path;
+    }
+
+    @Override
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     @Override
@@ -109,6 +115,11 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     @Override
     public String getPath() {
         return path;
+    }
+
+    @Override
+    public String getFilePath() {
+        return filePath;
     }
 
     @Override
@@ -173,7 +184,9 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     }
 
     private Double getStraightLineLen(Double x1, Double z1, Double x2, Double z2) {
-        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(z2 - z1, 2));
+        Double a1 = x2 - x1;
+        Double a2 = z2 - z1;
+        return Math.sqrt(a1 * a1 + a2 * a2);
     }
 
     private void bindCircle(HollowCylinder circle, Double angle) {
@@ -186,7 +199,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         double a = getInnerRadius() - circle.getOuterRadius();
         double b = getInnerRadius() - lastPoint.getR();
         double c = circle.getOuterRadius() + lastPoint.getR();
-        return lastPoint.getAngle() + Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b));
+        return lastPoint.getAngle() + Math.acos((a*a + b*b - c*c) / (2 * a * b));
     }
 
     private boolean checkLinesBtNestedCirclesCenters() {
@@ -195,7 +208,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         double r0 = circlePositionList.get(0).radius;
         for (int c = 1; c < circlePositionList.size(); c++) {
             Double centerLine = getStraightLineLen(x0, z0, circlePositionList.get(c).centerX, circlePositionList.get(c).centerZ);
-            if (centerLine.isNaN() || (centerLine < (r0 + circlePositionList.get(c).radius) - 0.0000001)) return false;
+            if (centerLine.isNaN() || (centerLine < (r0 + circlePositionList.get(c).radius) - 0.001)) return false;
         }
         return true;
     }
@@ -208,20 +221,17 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         circlePositionList.add(new CirclePosition(getNestedCircleXByAngle(orderList.get(0), radius, angle),
                 getNestedCircleZByAngle(orderList.get(0), radius, angle),
                 orderList.get(0).getOuterRadius()));
+        double radiusSquared = radius * radius;
         for (int i = 1; i < orderList.size(); i++) {
-            double a = radius - orderList.get(i).getOuterRadius();
-            double b = radius - point.getR();
-            double c = orderList.get(i).getOuterRadius() + point.getR();
-            angle += Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b));
+            angle += Math.acos((radiusSquared - orderList.get(i).getOuterRadius() * radius - point.getR() * (radius + orderList.get(i).getOuterRadius())) /
+                    ((radius - orderList.get(i).getOuterRadius())*(radius - point.getR())));
             circlePositionList.add(new CirclePosition(getNestedCircleXByAngle(orderList.get(i), radius, angle),
                     getNestedCircleZByAngle(orderList.get(i), radius, angle),
                     orderList.get(i).getOuterRadius()));
             point.setPoint(0, 0, orderList.get(i).getOuterRadius(), angle);
         }
-        double a = radius - orderList.get(0).getOuterRadius();
-        double b = radius - point.getR();
-        double c = orderList.get(0).getOuterRadius() + point.getR();
-        angle += Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b));
+        angle += Math.acos((radiusSquared - orderList.get(0).getOuterRadius() * radius - point.getR() * (radius + orderList.get(0).getOuterRadius())) /
+                ((radius - orderList.get(0).getOuterRadius())*(radius - point.getR())));
         return Math.toDegrees(angle);
     }
 
@@ -229,15 +239,20 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         orderList = circles.values().stream().sorted(Comparator.comparingDouble(HollowCylinder::getOuterRadius).reversed()).toList();
     }
 
-    private double getOptimalRadius() {
-        double step = 1000;
+    private double getOptimalRadius(boolean experimental) {
+//        double step = 1000;
         updateCircleOrder();
-        double minR = 2 * orderList.get(0).getOuterRadius();
+//        int tries = 0;
+//        double minR =  2 * orderList.get(0).getOuterRadius();
+        double step = experimental?  orderList.get(0).getOuterRadius() : 1000;
+        double minR = experimental? orderList.stream().mapToDouble(HollowCylinder::getOuterRadius).sum() : 2 * orderList.get(0).getOuterRadius();
+//        System.out.println("minR: " + minR);
         double gap = getAngleGap(getAngleForRadius(orderList, minR));
         double oldGap = 0;
         boolean nestedRadiusFit = checkLinesBtNestedCirclesCenters();
         byte changed = (byte) (gap > 0 ? 2 : 1);
-        while ((gap < 0 || gap > 0.1) && step > 10) {
+        while ((gap < 0 || gap > 10) && step > 10 || !nestedRadiusFit && experimental) {
+//            tries++;
             if (gap < 0 || !nestedRadiusFit) {
                 changed = (byte) (changed == 2 ? 0 : 1);
                 step = changed == 0 ? step/2 : step;
@@ -258,6 +273,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
             }
             oldGap = gap;
         }
+//        System.out.println("tries: " + tries + " gap: " + gap + " nested radius fit: " + nestedRadiusFit);
         return minR;
     }
 
@@ -273,7 +289,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         circles.values().stream().filter(PackageCircle.class::isInstance).map(PackageCircle.class::cast).forEach(PackageCircle::nestedOptimize);
         if (circles.size() == 1 && circles.values().stream().findFirst().get() instanceof PackageCircle packageCircle) {
             name += ":" + packageCircle.getName();
-            path += ":" + packageCircle.getPath();
+            path = packageCircle.getPath();
             packageCircle.group.getChildren().clear();
             Map<String, HollowCylinder> nestedCircles = packageCircle.getNestedCircles();
             clear();
@@ -305,14 +321,17 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         group.getChildren().add(this);
 
     }
+    public void updateView() {
+        updateView(false);
+    }
 
     @Override
-    public void updateView() {
+    public void updateView(boolean experimental) {
         nestedOptimize();
         updateCircleOrder();
-        orderList.stream().filter(PackageCircle.class::isInstance).map(PackageCircle.class::cast).forEach(PackageCircle::updateView);
+        orderList.stream().filter(PackageCircle.class::isInstance).map(PackageCircle.class::cast).forEach(it -> it.updateView(experimental));
         if (!orderList.isEmpty()) {
-            double optimalR = getOptimalRadius();
+            double optimalR = getOptimalRadius(experimental);
             double border = getOuterRadius() - getInnerRadius();
             setInnerRadius(optimalR);
             setOuterRadius(optimalR + border);
