@@ -10,15 +10,12 @@ java {
 group = "org.tera201"
 version = "1.2.2-SNAPSHOT"
 
-val javafxVersion = "20"
+val javafxVersion = "21"
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation("org.openjfx:javafx-controls:$javafxVersion")
-}
 
 javafx {
     version = javafxVersion
