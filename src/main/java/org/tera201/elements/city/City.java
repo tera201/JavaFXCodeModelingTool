@@ -23,16 +23,23 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
     private final Map<String,Quarter> quarters = new HashMap<>();
     private SelectionManager selectionManager;
     private String filePath;
+    private final PhongMaterial material = new PhongMaterial();;
+    private Color defaultColor = Color.GRAY;
 
     public City(double width, double height, double depth) {
-        this(width, height, depth, "");
+        this(width, height, depth, "", null);
     }
+
     public City(double width, double height, double depth, String name) {
+        this(width, height, depth, name, null);
+    }
+
+    public City(double width, double height, double depth, String name, Color color) {
         super(width, height, depth);
         this.name = name;
         this.path = name;
-        PhongMaterial material = new PhongMaterial();
-        material.setDiffuseColor(Color.GRAY);
+        if (color != null) defaultColor = color;
+        material.setDiffuseColor(defaultColor);
         material.setSpecularColor(Color.BLACK);
         this.setMaterial(material);
         this.setTranslateY(height);
@@ -217,6 +224,12 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
     @Override
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    @Override
+    public void setColor(Color color) {
+        defaultColor = color;
+        material.setDiffuseColor(color);
     }
 
     @Override

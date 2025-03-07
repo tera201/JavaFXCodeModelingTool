@@ -14,29 +14,39 @@ public class Building extends Box implements SpaceObject, Selectable {
     private String info;
     private String path = "";
     private SelectionManager selectionManager;
-    private PhongMaterial material = new PhongMaterial();
+    private final PhongMaterial material = new PhongMaterial();
+    private Color defaultColor = Color.PURPLE;
     private String filePath;
+
     public Building(double width, double height, double depth) {
-        this(null, width, height, depth);
+        this(null, width, height, depth, null);
     }
+
     public Building(String name, double width, double height, double depth) {
+        this(name, width, height, depth, null);
+    }
+
+    public Building(String name, double width, double height, double depth, Color color) {
         super(width, height, depth);
         this.name = name;
         this.path = name;
         setTranslateY(-height / 2);
-        material.setDiffuseColor(Color.PURPLE);
+        if (color != null) defaultColor = color;
+        material.setDiffuseColor(defaultColor);
         material.setSpecularColor(Color.BLACK);
         setMaterial(material);
         ensureTooltip().setText(name);
     }
 
+    @Override
     public void setColor(Color color) {
+        defaultColor = color;
         material.setDiffuseColor(color);
     }
 
     @Override
     public void setHighlighted(boolean highlighted) {
-        ((PhongMaterial) getMaterial()).setDiffuseColor(highlighted ? Color.RED : Color.PURPLE);
+        ((PhongMaterial) getMaterial()).setDiffuseColor(highlighted ? Color.RED : defaultColor);
     }
 
     public void setInfo(String info) {

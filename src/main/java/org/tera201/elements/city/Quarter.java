@@ -24,6 +24,8 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     private final Point lastPoint;
     private Tooltip tooltip;
     private String filePath;
+    private final PhongMaterial material = new PhongMaterial();
+    private Color defaultColor = Color.LIGHTBLUE;
 
     private final Group group = new Group();
 
@@ -35,10 +37,14 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     private SelectionManager selectionManager;
 
     public Quarter(double width, double height, double depth, double separate) {
-        this(null, width, height, depth, separate);
+        this(null, width, height, depth, separate, null);
     }
 
     public Quarter(String name, double width, double height, double depth, double separate) {
+        this(name, width, height, depth, separate, null);
+    }
+
+    public Quarter(String name, double width, double height, double depth, double separate, Color color) {
         super(width, height, depth);
         this.name = name;
         this.path = name;
@@ -46,8 +52,8 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
         this.separate = separate;
         lastPoint = new Point(this, separate);
         group.getChildren().add(this);
-        PhongMaterial material = new PhongMaterial();
-        material.setDiffuseColor(Color.LIGHTBLUE);
+        if (color != null) defaultColor = color;
+        material.setDiffuseColor(defaultColor);
         material.setSpecularColor(Color.BLACK);
         setMaterial(material);
         ensureTooltip().setText(name);
@@ -55,7 +61,7 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
 
     @Override
     public void setHighlighted(boolean highlighted) {
-        ((PhongMaterial) getMaterial()).setDiffuseColor(highlighted ? Color.RED : Color.LIGHTBLUE);
+        ((PhongMaterial) getMaterial()).setDiffuseColor(highlighted ? Color.RED : defaultColor);
     }
 
     @Override
@@ -105,6 +111,12 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
     @Override
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    @Override
+    public void setColor(Color color) {
+        defaultColor = color;
+        material.setDiffuseColor(color);
     }
 
     public City getCity() { return  this.city; }

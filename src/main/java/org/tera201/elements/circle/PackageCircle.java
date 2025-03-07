@@ -24,13 +24,18 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     private final List<CirclePosition> circlePositionList = new ArrayList<>();
     private Map<String, HollowCylinder> circles = new HashMap<>();
     private List<HollowCylinder> orderList;
-    private final Color defaultColor = Color.DARKGRAY;
+    private Color defaultColor = Color.DARKGRAY;
     private SelectionManager selectionManager;
     private String filePath;
+    private final PhongMaterial material = new PhongMaterial();
 
     public PackageCircle(String name, double radiusOuter, double radiusInner, double height) {
+        this(name, radiusOuter, radiusInner, height, null);
+    }
+
+    public PackageCircle(String name, double radiusOuter, double radiusInner, double height, Color color) {
         super(radiusOuter, radiusInner, height);
-        PhongMaterial material = new PhongMaterial();
+        if (color != null) defaultColor = color;
         material.setDiffuseColor(defaultColor);
         material.setSpecularColor(Color.BLACK);
         setMaterial(material);
@@ -38,6 +43,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         this.name = name;
         this.path = name;
     }
+
     @Override
     public String getName() {
         return name;
@@ -56,6 +62,12 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     @Override
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    @Override
+    public void setColor(Color color) {
+        defaultColor = color;
+        material.setDiffuseColor(color);
     }
 
     @Override

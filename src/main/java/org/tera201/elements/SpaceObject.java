@@ -1,6 +1,7 @@
 package org.tera201.elements;
 
 import javafx.scene.control.Tooltip;
+import javafx.scene.paint.Color;
 import org.tera201.SelectionManager;
 
 public interface SpaceObject {
@@ -13,6 +14,8 @@ public interface SpaceObject {
     void  setPath(String path);
 
     void setFilePath(String filePath);
+
+    void setColor(Color color);
 
     void setPosition(double newX, double newZ);
 
