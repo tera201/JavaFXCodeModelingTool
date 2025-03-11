@@ -252,19 +252,14 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
     }
 
     private double getOptimalRadius(boolean experimental) {
-//        double step = 1000;
         updateCircleOrder();
-//        int tries = 0;
-//        double minR =  2 * orderList.get(0).getOuterRadius();
         double step = experimental?  orderList.get(0).getOuterRadius() : 1000;
         double minR = experimental? orderList.stream().mapToDouble(HollowCylinder::getOuterRadius).sum() : 2 * orderList.get(0).getOuterRadius();
-//        System.out.println("minR: " + minR);
         double gap = getAngleGap(getAngleForRadius(orderList, minR));
         double oldGap = 0;
         boolean nestedRadiusFit = checkLinesBtNestedCirclesCenters();
         byte changed = (byte) (gap > 0 ? 2 : 1);
         while ((gap < 0 || gap > 10) && step > 10 || !nestedRadiusFit && experimental) {
-//            tries++;
             if (gap < 0 || !nestedRadiusFit) {
                 changed = (byte) (changed == 2 ? 0 : 1);
                 step = changed == 0 ? step/2 : step;
@@ -285,7 +280,6 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
             }
             oldGap = gap;
         }
-//        System.out.println("tries: " + tries + " gap: " + gap + " nested radius fit: " + nestedRadiusFit);
         return minR;
     }
 

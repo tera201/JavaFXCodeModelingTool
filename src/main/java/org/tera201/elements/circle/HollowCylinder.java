@@ -13,6 +13,9 @@ public class HollowCylinder extends MeshView {
 
     private final int divisions;
     private TriangleMesh mesh;
+    private DoubleProperty height;
+    private DoubleProperty outerRadius;
+    private DoubleProperty innerRadius;
 
     public HollowCylinder()  {
         this(DEFAULT_RADIUS_OUTER, DEFAULT_RADIUS_INNER, DEFAULT_HEIGHT, DEFAULT_DIVISIONS);
@@ -34,12 +37,6 @@ public class HollowCylinder extends MeshView {
         innerRadiusProperty().addListener((observable, oldValue, newValue) -> updateMesh());
         outerRadiusProperty().addListener((observable, oldValue, newValue) -> updateMesh());
     }
-    /**
-     * Defines the height or the Y dimension of the Cylinder.
-     *
-     * @defaultValue 2.0
-     */
-    private DoubleProperty height;
 
     public final void setHeight(double value) {
         heightProperty().set(value);
@@ -61,13 +58,6 @@ public class HollowCylinder extends MeshView {
         innerRadiusProperty().set(radiusInner);
     }
 
-    /**
-     * Defines the outer radius in the Z plane of the Cylinder.
-     *
-     * @defaultValue 2.0
-     */
-    private DoubleProperty outerRadius;
-
     public final void setOuterRadius(double value) {
         outerRadiusProperty().set(value);
     }
@@ -82,13 +72,6 @@ public class HollowCylinder extends MeshView {
         }
         return outerRadius;
     }
-
-    /**
-     * Defines the inner radius in the Z plane of the Cylinder.
-     *
-     * @defaultValue 1.0
-     */
-    private DoubleProperty innerRadius;
 
     public final void setInnerRadius(double value) {
         innerRadiusProperty().set(value);
@@ -105,11 +88,6 @@ public class HollowCylinder extends MeshView {
         return innerRadius;
     }
 
-    /**
-     * Retrieves the divisions attribute use to generate this cylinder.
-     *
-     * @return the divisions attribute.
-     */
     public int getDivisions() {
         return divisions;
     }

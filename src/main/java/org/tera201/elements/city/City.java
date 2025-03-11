@@ -192,11 +192,9 @@ public class City extends Box implements SpaceListObject<Quarter>, AddNewPositio
 
     public void updateView() {
         clearPosition();
-        quarters.values().stream().forEach(Quarter::updateView);
+        quarters.values().forEach(Quarter::updateView);
         resize();
-        quarters.values().stream().sorted(Comparator.comparingDouble(q -> - q.getWidth() * q.getDepth())).forEach(quarter -> {
-            setQuarterPosition(quarter);
-        });
+        quarters.values().stream().sorted(Comparator.comparingDouble(q -> - q.getWidth() * q.getDepth())).forEach(this::setQuarterPosition);
         quarters.values().forEach(it -> it.setSelectionManager(selectionManager));
         resizeByLastPosition();
     }
