@@ -130,7 +130,7 @@ public class MainSubScene extends SubScene {
 
         this.setOnMouseClicked(event -> {
             if (mousePressTime.get() < 200)
-                root.getSelectionManager().setSelected(null);
+                root.getSelectionManager().setSelected(null, event);
         });
     }
 

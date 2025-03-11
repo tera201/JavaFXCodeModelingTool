@@ -279,7 +279,7 @@ public class Quarter extends Box implements SpaceListObject<Building>, AddNewPos
         this.selectionManager = selectionManager;
         this.setOnMouseClicked(event -> {
             if (selectionManager != null) {
-                this.selectionManager.setSelected(this);
+                this.selectionManager.setSelected(this, event);
             }
             event.consume();  // stop event propagation
         });

@@ -101,7 +101,7 @@ public class PackageCircle extends HollowCylinder implements SpaceListObject<Hol
         this.setOnMouseReleased(event -> mousePressTime.set(System.currentTimeMillis() - mousePressTime.get()));
         this.setOnMouseClicked(event -> {
             if (selectionManager != null && mousePressTime.get() < 200) {
-                this.selectionManager.setSelected(this);
+                this.selectionManager.setSelected(this, event);
             }
             event.consume();  // stop event propagation
         });
