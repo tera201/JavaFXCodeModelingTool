@@ -42,7 +42,6 @@ public class MainSubScene extends SubScene {
                         @NamedArg("depthBuffer") boolean depthBuffer, @NamedArg("antiAliasing") SceneAntialiasing antiAliasing) {
         super(root, width, height, depthBuffer, antiAliasing);
 
-//        this.setFill(Color.web("3d3d3d"));
         this.setFill(Color.SILVER);
 
         camera = new PerspectiveCamera(false);
@@ -55,18 +54,14 @@ public class MainSubScene extends SubScene {
         root.setMainSubScene(this);
 
         PointLight light = new PointLight(Color.GAINSBORO);
-//        light.getTransforms().add(new Translate(0, 0, -1000));
         light.setLightOn(true);
         light.getTransforms().addAll(rotateX, rotateY, camPosition);
-//        light.getTransforms().addAll(rotateX, rotateY, camPosition.clone());
 
-//        AmbientLight ambientLight = new AmbientLight(Color.DARKGRAY);
         AmbientLight ambientLight = new AmbientLight(Color.GAINSBORO);
         ambientLight.setLightOn(true);
 
         AtomicLong mousePressTime = new AtomicLong();
 
-//        root.getChildren().add(ambientLight);
         root.getChildren().add(light);
         this.setCamera(camera);
         this.setFocusTraversable(true);
@@ -135,7 +130,7 @@ public class MainSubScene extends SubScene {
 
         this.setOnMouseClicked(event -> {
             if (mousePressTime.get() < 200)
-                root.getSelectionManager().setSelected(null);
+                root.getSelectionManager().setSelected(null, event);
         });
     }
 
@@ -155,6 +150,7 @@ public class MainSubScene extends SubScene {
         this.scrollSpeed = scrollSpeed;
         addScrollEvent();
     }
+
     public boolean getIsDynamicScrollSpeed() {
         return this.isDynamicScrollSpeed;
     }
@@ -162,6 +158,7 @@ public class MainSubScene extends SubScene {
         this.isDynamicScrollSpeed = isDynamicScrollSpeed;
         addScrollEvent();
     }
+
     private void addScrollEvent() {
         this.setOnScroll((ScrollEvent event) -> {
             double deltaY = event.getDeltaY();
@@ -202,10 +199,7 @@ public class MainSubScene extends SubScene {
         return !(newPosition.isNaN() || newPosition.isInfinite() || newPosition > 0 || newPosition < defaultCamZPosition * 10);
     }
 
-    /*
-     From fx83dfeatures.Camera3D
-     http://hg.openjdk.java.net/openjfx/8u-dev/rt/file/5d371a34ddf1/apps/toys/FX8-3DFeatures/src/fx83dfeatures/Camera3D.java
-    */
+
     public Point3D unProjectDirection(double sceneX, double sceneY, double sWidth, double sHeight) {
         double tanHFov = Math.tan(Math.toRadians(camera.getFieldOfView()) * 0.5f);
         Point3D vMouse = new Point3D(tanHFov*(2*sceneX/sWidth-1), tanHFov*(2*sceneY/sWidth-sHeight/sWidth), 1);

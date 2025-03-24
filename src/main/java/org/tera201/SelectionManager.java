@@ -1,5 +1,6 @@
 package org.tera201;
 
+import javafx.scene.input.MouseEvent;
 import org.tera201.elements.Selectable;
 import org.tera201.elements.SelectionObserver;
 
@@ -15,7 +16,7 @@ public class SelectionManager {
         this.infoPane = infoPane;
     }
 
-    public void setSelected(Selectable selectable) {
+    public void setSelected(Selectable selectable, MouseEvent event) {
         if (selected != null) {
             selected.setHighlighted(false);
             infoPane.hideInfo();

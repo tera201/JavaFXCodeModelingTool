@@ -17,20 +17,7 @@ public class CircleMainScene extends Application {
 
     @Override
     public void start(Stage stage) {
-        PackageCircle packageCircle = new PackageCircle("1Pack", 1800d, 1673.2421875, 100d);
-        ClassCircle circle = new ClassCircle("11", 4000, 400, 100);
-        ClassCircle circle2 = new ClassCircle("12", 3000, 600, 100);
-        ClassCircle circle3 = new ClassCircle("13", 2800, 400, 100);
-        ClassCircle circle4 = new ClassCircle("14", 2800, 400, 100);
-        ClassCircle circle5 = new ClassCircle("15", 2800, 400, 100);
-        ClassCircle circle6 = new ClassCircle("16", 2800, 300, 100);
-        ClassCircle circle7 = new ClassCircle("17", 2800, 200, 100);
-        ClassCircle circle8 = new ClassCircle("18", 2800, 400, 100);
-        ClassCircle circle9 = new ClassCircle("19", 2800, 400, 100);
-        ClassCircle circle10 = new ClassCircle("20", 200, 100, 100);
-        packageCircle.addAllObjects(circle, circle2, circle3, circle4, circle5, circle6, circle7, circle8, circle9, circle10);
-
-        FXSpace<HollowCylinder> fxSpace = new FXSpace<>(packageCircle);
+        FXSpace<HollowCylinder> fxSpace = getFxSpace();
 
         MainSubScene mainSubScene = new MainSubScene(fxSpace, SCENE_WIDTH, SCENE_HEIGHT, true, SceneAntialiasing.BALANCED);
         StackPane stackPane = new StackPane(mainSubScene);
@@ -46,6 +33,23 @@ public class CircleMainScene extends Application {
         stage.setTitle("3D Dragging");
         stage.setScene(scene2);
         stage.show();
+    }
+
+    private static FXSpace<HollowCylinder> getFxSpace() {
+        PackageCircle packageCircle = new PackageCircle("1Pack", 1800d, 1673.2421875, 100d);
+        ClassCircle circle = new ClassCircle("11", 4000, 400, 100);
+        ClassCircle circle2 = new ClassCircle("12", 3000, 600, 100);
+        ClassCircle circle3 = new ClassCircle("13", 2800, 400, 100);
+        ClassCircle circle4 = new ClassCircle("14", 2800, 400, 100);
+        ClassCircle circle5 = new ClassCircle("15", 2800, 400, 100);
+        ClassCircle circle6 = new ClassCircle("16", 2800, 300, 100);
+        ClassCircle circle7 = new ClassCircle("17", 2800, 200, 100);
+        ClassCircle circle8 = new ClassCircle("18", 2800, 400, 100);
+        ClassCircle circle9 = new ClassCircle("19", 2800, 400, 100);
+        ClassCircle circle10 = new ClassCircle("20", 200, 100, 100);
+        packageCircle.addAllObjects(circle, circle2, circle3, circle4, circle5, circle6, circle7, circle8, circle9, circle10);
+
+        return new FXSpace<>(packageCircle);
     }
 
     public static void main(String[] args) {
