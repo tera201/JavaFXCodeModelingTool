@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "2.1.0"
-    id("org.openjfx.javafxplugin") version "0.1.0"
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.javafxplugin)
 }
 
 java {
@@ -10,7 +10,7 @@ java {
 group = "org.tera201"
 version = "1.2.2-SNAPSHOT"
 
-val javafxVersion = "21"
+val javafxVersion = libs.versions.javafx.get()
 
 repositories {
     mavenCentral()
